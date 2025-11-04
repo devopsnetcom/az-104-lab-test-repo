@@ -7,3 +7,6 @@ output "vnet_Id" {
 output "subnet_Id" {
   value = azurerm_subnet.subnet.*.id
 }
+output "vm_nsg_id" {
+  value = azurerm_network_security_group.vm_nsg.id
+}
