@@ -13,6 +13,7 @@ module "vnet01" {
   vnet_Address       = var.vnet_Address
   subnet_NameList    = var.subnet_NameList
   subnet_AddressList = var.subnet_AddressList
+  vm_name            = var.vm_name
 }
 
 ######### Azure Windows Virtual Machine deployment #########
