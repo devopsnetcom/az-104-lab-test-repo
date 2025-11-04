@@ -38,5 +38,5 @@ resource "azurerm_network_security_group" "vm_nsg" {
 
 resource "azurerm_subnet_network_security_group_association" "subnet_assoc" {
   subnet_id                 = azurerm_subnet.subnet[0].id
-  network_security_group_id = azurerm_network_security_group.subnet_nsg.id
+  network_security_group_id = azurerm_network_security_group.vm_nsg.id
 }
