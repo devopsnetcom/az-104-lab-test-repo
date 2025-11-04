@@ -12,3 +12,32 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name  = var.rg_Name
   address_prefixes     = [var.subnet_AddressList[count.index]]
 }
+
+resource "azurerm_network_security_group" "vm_nsg" {
+  name                = "${var.vm_name}-nsg"
+  location            = var.location
+  resource_group_name = var.rg_Name
+
+  security_rule {
+    name                       = "Allow-RDP"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "*"  # Replace with your public IP for security
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    environment = "dev"
+    application = "windows-vm"
+  }
+}
+
+# Associate NSG with NIC
+resource "azurerm_network_interface_security_group_association" "vm_nic_nsg_assoc" {
+  network_interface_id      = azurerm_network_interface.vm_nic.id
+  network_security_group_id = azurerm_network_security_group.vm_nsg.id
+}
