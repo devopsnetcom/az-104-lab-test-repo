@@ -36,8 +36,7 @@ resource "azurerm_network_security_group" "vm_nsg" {
   }
 }
 
-# Associate NSG with NIC
-resource "azurerm_network_interface_security_group_association" "vm_nic_nsg_assoc" {
-  network_interface_id      = azurerm_network_interface.vm_nic.id
-  network_security_group_id = azurerm_network_security_group.vm_nsg.id
+resource "azurerm_subnet_network_security_group_association" "subnet_assoc" {
+  subnet_id                 = azurerm_subnet.subnet[0].id
+  network_security_group_id = azurerm_network_security_group.subnet_nsg.id
 }
