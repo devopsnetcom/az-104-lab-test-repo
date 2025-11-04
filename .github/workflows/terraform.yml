@@ -1,0 +1,140 @@
+name: Terraform Azure VM Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose Terraform action"
+        required: true
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+      rg_Name:
+        description: "Enter Resource Group Name"
+        required: true
+        default: "rg-demo"
+
+      location:
+        description: "Enter Azure Region"
+        required: true
+        default: "eastus"
+
+      vnet_Name:
+        description: "Enter Virtual Network Name"
+        required: true
+        default: "vnet-demo"
+
+      vnet_Address:
+        description: "Enter Virtual Network CIDR"
+        required: true
+        default: "10.0.0.0/16"
+
+      subnet_NameList:
+        description: "Comma-separated list of subnet names"
+        required: true
+        default: "subnet-1,subnet-2"
+
+      subnet_AddressList:
+        description: "Comma-separated list of subnet CIDRs"
+        required: true
+        default: "10.0.1.0/24,10.0.2.0/24"
+
+env:
+  TF_IN_AUTOMATION: true
+  TF_INPUT: false
+  WORKING_DIR: terraform-resources
+
+  # Static backend for state storage
+  TFSTATE_RG: tfstate-rg
+  TFSTATE_STORAGE_ACCOUNT: tfstatestgacfortesting
+  TFSTATE_CONTAINER: tfstate
+  TFSTATE_KEY: terraform.tfstate
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    name: Terraform Workflow
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.7
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
+
+      - name: Set ARM environment variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+
+      - name: Terraform Init (Static Backend)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=${{ env.TFSTATE_RG }}" \
+            -backend-config="storage_account_name=${{ env.TFSTATE_STORAGE_ACCOUNT }}" \
+            -backend-config="container_name=${{ env.TFSTATE_CONTAINER }}" \
+            -backend-config="key=${{ env.TFSTATE_KEY }}"
+
+      - name: Prepare Dynamic Subnet Inputs
+        run: |
+          echo "subnet_names=$(echo '${{ github.event.inputs.subnet_NameList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
+          echo "subnet_addresses=$(echo '${{ github.event.inputs.subnet_AddressList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
+
+      - name: Terraform Plan
+        if: ${{ github.event.inputs.action == 'plan' }}
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform plan \
+            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="location=${{ github.event.inputs.location }}" \
+            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
+            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
+            -var='subnet_NameList=${{ env.subnet_names }}' \
+            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
+            -var-file="terraform.tfvars"
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action == 'apply' }}
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform apply -auto-approve \
+            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="location=${{ github.event.inputs.location }}" \
+            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
+            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
+            -var='subnet_NameList=${{ env.subnet_names }}' \
+            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
+            -var-file="terraform.tfvars"
+
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform destroy -auto-approve \
+            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="location=${{ github.event.inputs.location }}" \
+            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
+            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
+            -var='subnet_NameList=${{ env.subnet_names }}' \
+            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
+            -var-file="terraform.tfvars"

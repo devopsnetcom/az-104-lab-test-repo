@@ -1,0 +1,17 @@
+variable "vm_pip" { type = string }
+variable "rg_Name" { type = string }
+variable "location" { type = string }
+variable "pip_allocation" { type = string }
+variable "vm_nic" { type = string }
+variable "ip_configuration" { type = string }
+variable "vm_name" { type = string }
+variable "vm_size" { type = string }
+variable "vm_username" { type = string }
+variable "vm_password" { type = string }
+variable "vm_image_publisher" { type = string }
+variable "vm_image_offer" { type = string }
+variable "vm_image_sku" { type = string }
+variable "vm_image_version" { type = string }
+variable "vm_os_disk_strg_type" { type = string }
+variable "vm_os_disk_caching" { type = string }
+variable "vm_subnetid" { type = string }

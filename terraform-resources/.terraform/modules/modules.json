@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"vnet01","Source":"../terraform-modules/network","Dir":"../terraform-modules/network"},{"Key":"winvm","Source":"../terraform-modules/virtual_machine","Dir":"../terraform-modules/virtual_machine"}]}
