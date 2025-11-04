@@ -13,7 +13,6 @@ module "vnet01" {
   vnet_Address       = var.vnet_Address
   subnet_NameList    = var.subnet_NameList
   subnet_AddressList = var.subnet_AddressList
-  vm_name            = var.vm_name
 }
 
 ######### Azure Windows Virtual Machine deployment #########
@@ -35,7 +34,5 @@ module "winvm" {
   vm_image_version     = var.vm_image_version
   vm_os_disk_strg_type = var.vm_os_disk_strg_type
   vm_os_disk_caching   = var.vm_os_disk_caching
-
-  # ✅ Fix: use last subnet dynamically
   vm_subnetid          = module.vnet01.subnet_Id[length(module.vnet01.subnet_Id) - 1]
 }
