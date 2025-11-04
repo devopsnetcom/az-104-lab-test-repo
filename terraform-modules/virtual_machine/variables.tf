@@ -15,3 +15,8 @@ variable "vm_image_version" { type = string }
 variable "vm_os_disk_strg_type" { type = string }
 variable "vm_os_disk_caching" { type = string }
 variable "vm_subnetid" { type = string }
+
+# ✅ Added variable for NSG association
+variable "nsg_id" {
+  type = string
+}

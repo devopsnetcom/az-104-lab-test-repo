@@ -19,6 +19,12 @@ resource "azurerm_network_interface" "vm_nic" {
   }
 }
 
+# ✅ Correct way to associate NSG to NIC
+resource "azurerm_network_interface_security_group_association" "nic_nsg_assoc" {
+  network_interface_id      = azurerm_network_interface.vm_nic.id
+  network_security_group_id = var.nsg_id
+}
+
 resource "azurerm_windows_virtual_machine" "winvm" {
   name                = var.vm_name
   resource_group_name = var.rg_Name

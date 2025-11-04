@@ -35,6 +35,9 @@ module "winvm" {
   vm_os_disk_strg_type = var.vm_os_disk_strg_type
   vm_os_disk_caching   = var.vm_os_disk_caching
 
-  # ✅ Fix: use last subnet dynamically
+  # ✅ Use last subnet dynamically
   vm_subnetid          = module.vnet01.subnet_Id[length(module.vnet01.subnet_Id) - 1]
+
+  # ✅ Attach NSG to VM NIC
+  nsg_id               = module.vnet01.nsg_id
 }
