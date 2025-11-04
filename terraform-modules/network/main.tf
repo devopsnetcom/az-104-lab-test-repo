@@ -14,7 +14,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_security_group" "vm_nsg" {
-  name                = "${var.vm_name}-nsg"
+  name                = "${var.vnet_Name}-subnet-nsg"
   location            = var.location
   resource_group_name = var.rg_Name
 
