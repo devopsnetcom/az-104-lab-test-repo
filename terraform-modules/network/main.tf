@@ -13,30 +13,35 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [var.subnet_AddressList[count.index]]
 }
 
+# -------------------------------
+# Network Security Group (NSG)
+# -------------------------------
 resource "azurerm_network_security_group" "vm_nsg" {
-  name                = "${var.vnet_Name}-subnet-nsg"
+  name                = "${var.vnet_Name}-nsg"
   location            = var.location
   resource_group_name = var.rg_Name
 
   security_rule {
-    name                       = "Allow-RDP"
-    priority                   = 1000
+    name                       = "RDP"
+    priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefix      = "*"  # Replace with your public IP for security
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
-  tags = {
-    environment = "dev"
-    application = "windows-vm"
+  security_rule {
+    name                       = "Allow-Internet-Outbound"
+    priority                   = 200
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
-}
-
-resource "azurerm_subnet_network_security_group_association" "subnet_assoc" {
-  subnet_id                 = azurerm_subnet.subnet[0].id
-  network_security_group_id = azurerm_network_security_group.vm_nsg.id
 }
