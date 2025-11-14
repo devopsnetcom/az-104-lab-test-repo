@@ -13,15 +13,20 @@ on:
           - apply
           - destroy
 
-      rg_Name:
-        description: "Enter Resource Group Name"
-        required: true
-        default: "rg-demo"
-
       location:
         description: "Enter Azure Region"
         required: true
         default: "eastus"
+
+      user_name:
+        description: "Enter Username"
+        required: true
+        default: "azureuser"
+
+      course_name:
+        description: "Enter Course Name"
+        required: true
+        default: "Democourse"
 
       vnet_Name:
         description: "Enter Virtual Network Name"
@@ -105,7 +110,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: |
           terraform plan \
-            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="rg_Name=${{ github.event.inputs.course_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
@@ -118,7 +124,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: |
           terraform apply -auto-approve \
-            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="rg_Name=${{ github.event.inputs.course_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
@@ -131,7 +138,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: |
           terraform destroy -auto-approve \
-            -var="rg_Name=${{ github.event.inputs.rg_Name }}" \
+            -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="rg_Name=${{ github.event.inputs.course_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
