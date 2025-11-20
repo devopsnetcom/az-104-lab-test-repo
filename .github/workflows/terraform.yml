@@ -28,6 +28,11 @@ on:
         required: true
         default: "Democourse"
 
+      module_name:
+        description: "Enter Module Name"
+        required: true
+        default: "Lab01"
+
       vnet_Name:
         description: "Enter Virtual Network Name"
         required: true
@@ -111,7 +116,9 @@ jobs:
         run: |
           terraform plan \
             -var="user_name=${{ github.event.inputs.user_name }}" \
-            -var="rg_Name=${{ github.event.inputs.course_name }}" \
+            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
@@ -125,7 +132,9 @@ jobs:
         run: |
           terraform apply -auto-approve \
             -var="user_name=${{ github.event.inputs.user_name }}" \
-            -var="rg_Name=${{ github.event.inputs.course_name }}" \
+            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
@@ -139,7 +148,9 @@ jobs:
         run: |
           terraform destroy -auto-approve \
             -var="user_name=${{ github.event.inputs.user_name }}" \
-            -var="rg_Name=${{ github.event.inputs.course_name }}" \
+            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
             -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
