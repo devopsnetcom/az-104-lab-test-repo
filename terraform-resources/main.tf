@@ -33,7 +33,7 @@ module "bastionhost" {
   location                  = data.azurerm_resource_group.rg.location
   pip_allocation            = var.pip_allocation
   basiton_sku               = var.basiton_sku
-  vnet_Id                   = module.vnet01.vnet_id
+  vnet_Id                   = module.vnet01.vnet_id.id
   basinton_subnet_Id        = module.vnet01.basinton_subnet_Id
   basinton_ip_configuration = var.basinton_ip_configuration
 }
