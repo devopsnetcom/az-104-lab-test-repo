@@ -6,3 +6,4 @@ variable "pip_allocation" { type = string }
 variable "basiton_sku" { type = string }
 variable "basinton_subnet_Id" { type = string }
 variable "basinton_ip_configuration" { type = string }
+variable "vnet_Id" { type = string }

@@ -26,7 +26,7 @@ module "vnet01" {
 
 #### Azure Bastion Host Deployment ####
 module "bastionhost" {
-  source                    = "../terraform-modules/bastion"
+  source                    = "../terraform-modules/bastion_host"
   bastion_pip_name          = "${local.prefix}-vnet-bastion-IPv4"
   bastion_Name              = "${local.prefix}-vnet-bastion"
   rg_Name                   = data.azurerm_resource_group.rg.name
