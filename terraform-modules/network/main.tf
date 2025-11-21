@@ -17,7 +17,7 @@ resource "azurerm_subnet" "basion_subnet" {
   name                 = "AzureBastionSubnet"
   virtual_network_name = azurerm_virtual_network.wec_vnet.name
   resource_group_name  = var.rg_Name
-  address_prefixes     = [var.basinton_subnet_Address]
+  address_prefixes     = [var.basinton_subnet_Address[0]]
 }
 
 # -------------------------------
