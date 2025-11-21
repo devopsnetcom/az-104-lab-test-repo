@@ -1,12 +1,11 @@
-/*
-resource "azurerm_resource_group" "rg" {
-  name     = var.rg_Name
-  location = var.location
-}*/
 
 # ✅ DATA source to reference existing RG
 data "azurerm_resource_group" "rg" {
   name = var.rg_Name
+}
+
+data "azuread_service_principal" "github_spn" {
+  client_id = var.github_spn_client_id
 }
 
 locals {

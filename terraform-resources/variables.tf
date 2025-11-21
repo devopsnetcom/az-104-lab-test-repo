@@ -3,6 +3,8 @@ variable "subscription_id" { type = string }
 variable "location" { type = string }
 variable "rg_Name" { type = string }
 variable "user_name" { type = string }
+variable "tenant_id" { type = string }
+variable "github_spn_client_id" { type = string }  
 
 ### VNET Module Variables Start ###
 variable "vnet_Name" { type = string }
@@ -25,3 +27,7 @@ variable "vm_image_sku" { type = string }
 variable "vm_image_version" { type = string }
 variable "vm_os_disk_strg_type" { type = string }
 variable "vm_os_disk_caching" { type = string }
+
+### Event Grid Topic Module Variables ###
+variable "eventgrid_topic_name" { type = string }
+variable "rg_corecomponent_name" { type = string }
