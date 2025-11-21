@@ -11,6 +11,9 @@ variable "vnet_Name" { type = string }
 variable "vnet_Address" { type = string }
 variable "subnet_NameList" { type = list(string) }
 variable "subnet_AddressList" { type = list(string) }
+variable "basinton_subnet_Address" { type = string }
+variable "basiton_sku" { type = string }
+variable "basinton_ip_configuration" { type = string }
 
 #### Variables for Windows Virtual Module defined here ####
 variable "vm_pip" { type = string }

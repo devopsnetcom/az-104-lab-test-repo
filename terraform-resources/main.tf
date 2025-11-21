@@ -12,22 +12,35 @@ locals {
   prefix = lower(var.user_name)
 }
 
-############# VNET & SUBNET Deployment Code #############
-
+############# VNET & SUBNET & Basinton Subnet Deployment Code #############
 module "vnet01" {
-  source             = "../terraform-modules/network"
-  vnet_Name          = "${local.prefix}-vnet"
-  rg_Name            = data.azurerm_resource_group.rg.name
-  location           = data.azurerm_resource_group.rg.location
-  vnet_Address       = var.vnet_Address
-  subnet_NameList    = var.subnet_NameList
-  subnet_AddressList = var.subnet_AddressList
+  source                  = "../terraform-modules/network"
+  vnet_Name               = "${local.prefix}-vnet"
+  rg_Name                 = data.azurerm_resource_group.rg.name
+  location                = data.azurerm_resource_group.rg.location
+  vnet_Address            = var.vnet_Address
+  subnet_NameList         = var.subnet_NameList
+  subnet_AddressList      = var.subnet_AddressList
+  basinton_subnet_Address = var.basinton_subnet_Address
+}
+
+#### Azure Bastion Host Deployment ####
+module "bastionhost" {
+  source                    = "../terraform-modules/bastion"
+  bastion_pip_name          = "${local.prefix}-vnet-bastion-IPv4"
+  bastion_Name              = "${local.prefix}-vnet-bastion"
+  rg_Name                   = data.azurerm_resource_group.rg.name
+  location                  = data.azurerm_resource_group.rg.location
+  pip_allocation            = var.pip_allocation
+  basiton_sku               = var.basiton_sku
+  vnet_Id                   = module.vnet01.vnet_id
+  basinton_subnet_Id        = module.vnet01.basinton_subnet_Id
+  basinton_ip_configuration = var.basinton_ip_configuration
 }
 
 ######### Azure Windows Virtual Machine deployment #########
 module "winvm" {
   source               = "../terraform-modules/virtual_machine"
-  vm_pip               = "${local.prefix}-pip"
   rg_Name              = data.azurerm_resource_group.rg.name
   location             = data.azurerm_resource_group.rg.location
   pip_allocation       = var.pip_allocation

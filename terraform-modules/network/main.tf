@@ -13,6 +13,13 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [var.subnet_AddressList[count.index]]
 }
 
+resource "azurerm_subnet" "basion_subnet" {
+  name                 = "AzureBastionSubnet"
+  virtual_network_name = azurerm_virtual_network.wec_vnet.name
+  resource_group_name  = var.rg_Name
+  address_prefixes     = [var.basinton_subnet_Address]
+}
+
 # -------------------------------
 # Network Security Group (NSG)
 # -------------------------------
@@ -22,7 +29,7 @@ resource "azurerm_network_security_group" "vm_nsg" {
   resource_group_name = var.rg_Name
 
   security_rule {
-    name                       = "RDP"
+    name                       = "Allow-VNet-RDP-Inbound"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
@@ -41,6 +48,18 @@ resource "azurerm_network_security_group" "vm_nsg" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Allow-VNet-SSH-Inbound"
+    priority                   = 300
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }

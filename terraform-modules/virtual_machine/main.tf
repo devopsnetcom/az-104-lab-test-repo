@@ -1,10 +1,12 @@
+
+/* As we'll connecting with Basinton host, no need for Public IP
 resource "azurerm_public_ip" "vm_pip" {
   name                = var.vm_pip
   resource_group_name = var.rg_Name
   location            = var.location
   allocation_method   = var.pip_allocation
   sku                 = "Standard"
-}
+}*/
 
 resource "azurerm_network_interface" "vm_nic" {
   name                = var.vm_nic
@@ -15,7 +17,6 @@ resource "azurerm_network_interface" "vm_nic" {
     name                          = var.ip_configuration
     subnet_id                     = var.vm_subnetid
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.vm_pip.id
   }
 }
 
