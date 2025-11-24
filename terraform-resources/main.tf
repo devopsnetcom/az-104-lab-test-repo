@@ -63,3 +63,21 @@ module "winvm" {
   # ✅ Attach NSG to VM NIC
   nsg_id               = module.vnet01.nsg_id
 }
+
+#### Event Grid Topic Module Deployment ####
+module "eventgrid_topic" {
+  source                  = "../terraform-modules/eventgrid_topic"
+  eventgrid_topic_name    = var.eventgrid_topic_name
+  rg_corecomponent_name   = var.rg_corecomponent_name
+  principal_id            = data.azuread_service_principal.github_spn.id
+  tenant_id               = var.tenant_id
+  user_name               = local.prefix
+  course_name             = var.course_name
+  module_name             = var.module_name
+  vm_name                 = module.winvm.vm_name
+  vm_username             = var.vm_username
+  vm_password             = var.vm_password
+  vm_id                   = module.winvm.vm_id
+  vm_ip                   = module.winvm.vm_ip_address
+  bastion_id              = module.bastionhost.bastion_host_id
+}

@@ -26,7 +26,7 @@ on:
       course_name:
         description: "Enter Course Name"
         required: true
-        default: "Democourse"
+        default: "AZ-104"
 
       module_name:
         description: "Enter Module Name"
@@ -118,6 +118,8 @@ jobs:
             -var="user_name=${{ github.event.inputs.user_name }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="course_name=${{ github.event.inputs.course_name }}" \
+            -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
@@ -134,6 +136,8 @@ jobs:
             -var="user_name=${{ github.event.inputs.user_name }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="course_name=${{ github.event.inputs.course_name }}" \
+            -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
@@ -150,6 +154,8 @@ jobs:
             -var="user_name=${{ github.event.inputs.user_name }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="course_name=${{ github.event.inputs.course_name }}" \
+            -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
             -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \

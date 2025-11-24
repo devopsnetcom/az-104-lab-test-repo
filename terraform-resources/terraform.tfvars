@@ -26,3 +26,5 @@ basiton_pip_sku             = "Standard"
 ## Event grid Topic details
 eventgrid_topic_name = "egt-lab-eastus-001"
 rg_corecomponent_name = "RG-CoreComponents"
+course_name = "AZ-104"
+module_name = "Lab01"
