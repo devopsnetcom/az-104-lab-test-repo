@@ -21,7 +21,7 @@ resource "null_resource" "send_vm_event" {
   ]
 
   triggers = {
-    bastion_name = azurerm_bastion_host.bastion.bastion_host_name
+    bastion_name = var.bastion_name
   }
 
   provisioner "local-exec" {
