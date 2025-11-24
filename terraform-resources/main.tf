@@ -66,7 +66,7 @@ module "winvm" {
 
 #### Event Grid Topic Module Deployment ####
 module "eventgrid_topic" {
-  source                  = "../terraform-modules/eventgrid_topic"
+  source                  = "../terraform-modules/event_grid_topic"
   eventgrid_topic_name    = var.eventgrid_topic_name
   rg_corecomponent_name   = var.rg_corecomponent_name
   principal_id            = data.azuread_service_principal.github_spn.id
