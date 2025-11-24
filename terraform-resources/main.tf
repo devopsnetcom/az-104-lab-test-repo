@@ -35,6 +35,7 @@ module "bastionhost" {
   basiton_sku               = var.basiton_sku
   basinton_subnet_Id        = module.vnet01.basinton_subnet_Id
   basinton_ip_configuration = var.basinton_ip_configuration
+  basiton_pip_sku           = var.basiton_pip_sku
 }
 
 ######### Azure Windows Virtual Machine deployment #########
