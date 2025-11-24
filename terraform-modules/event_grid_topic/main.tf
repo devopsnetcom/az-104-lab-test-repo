@@ -15,9 +15,7 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
 
 resource "null_resource" "send_vm_event" {
   depends_on = [
-    module.winvm,
-    azurerm_role_assignment.eventgrid_sender,
-    module.bastionhost
+    azurerm_role_assignment.eventgrid_sender
   ]
 
   triggers = {
