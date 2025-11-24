@@ -3,15 +3,20 @@ variable "subscription_id" { type = string }
 variable "location" { type = string }
 variable "rg_Name" { type = string }
 variable "user_name" { type = string }
+variable "tenant_id" { type = string }
+variable "github_spn_client_id" { type = string }  
 
 ### VNET Module Variables Start ###
 variable "vnet_Name" { type = string }
 variable "vnet_Address" { type = string }
 variable "subnet_NameList" { type = list(string) }
 variable "subnet_AddressList" { type = list(string) }
+variable "basinton_subnet_Address" { type = list(string) }
+variable "basiton_sku" { type = string }
+variable "basinton_ip_configuration" { type = string }
+variable "basiton_pip_sku" { type = string }
 
 #### Variables for Windows Virtual Module defined here ####
-variable "vm_pip" { type = string }
 variable "pip_allocation" { type = string }
 variable "vm_nic" { type = string }
 variable "ip_configuration" { type = string }
@@ -25,3 +30,7 @@ variable "vm_image_sku" { type = string }
 variable "vm_image_version" { type = string }
 variable "vm_os_disk_strg_type" { type = string }
 variable "vm_os_disk_caching" { type = string }
+
+### Event Grid Topic Module Variables ###
+variable "eventgrid_topic_name" { type = string }
+variable "rg_corecomponent_name" { type = string }

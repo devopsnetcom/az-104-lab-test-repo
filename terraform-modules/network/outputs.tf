@@ -14,3 +14,12 @@ output "subnet_Id" {
 output "nsg_id" {
   value = azurerm_network_security_group.vm_nsg.id
 }
+
+# Azure basinton subnet ID output
+output "basinton_subnet_Id" {
+  value = azurerm_subnet.basion_subnet.id  
+}
+
+output "bastion_subnet_name" {
+  value = azurerm_subnet.basion_subnet.name
+}
