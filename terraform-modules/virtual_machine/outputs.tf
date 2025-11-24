@@ -13,3 +13,13 @@ output "vm_name" {
   description = "The Name of the Virtual Machine"
   value       = azurerm_windows_virtual_machine.winvm.name
 }
+
+output "vm_os_disk_id" {
+  description = "The OS Disk ID of the Virtual Machine"
+  value       = azurerm_windows_virtual_machine.winvm.os_disk_id
+}
+
+output "vm_size" {
+  description = "The Size of the Virtual Machine"
+  value       = azurerm_windows_virtual_machine.winvm.size
+}
