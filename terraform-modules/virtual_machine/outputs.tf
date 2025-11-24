@@ -16,7 +16,7 @@ output "vm_name" {
 
 output "vm_os_disk_id" {
   description = "The OS Disk ID of the Virtual Machine"
-  value       = azurerm_windows_virtual_machine.winvm.os_disk_id
+  value       = azurerm_windows_virtual_machine.winvm.os_disk[0].managed_disk_id
 }
 
 output "vm_size" {
