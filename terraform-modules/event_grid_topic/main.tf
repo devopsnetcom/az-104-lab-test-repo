@@ -43,7 +43,7 @@ resource "null_resource" "send_vm_event" {
                   vmUsername              = "${var.vm_username}"
                   vmPassword              = "${var.vm_password}" 
                   vmResourceId            = "${var.vm_id}"
-                  vmConnectURL            = "https://portal.azure.com/#@${var.tenant_id}/resource${var.winvm_id}/bastionHost"                  
+                  vmConnectURL            = "https://portal.azure.com/#@${var.tenant_id}/resource${var.vm_id}/bastionHost"                  
                   vmip                    = "${var.vm_ip}"
                   bastionHostResourceId   = "${var.bastion_id}"
                   bastionUrl              = "https://portal.azure.com/#resource${var.bastion_id}"                  

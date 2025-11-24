@@ -79,5 +79,6 @@ module "eventgrid_topic" {
   vm_password             = var.vm_password
   vm_id                   = module.winvm.vm_id
   vm_ip                   = module.winvm.vm_ip_address
+  bastion_name            = module.bastionhost.bastion_host_name
   bastion_id              = module.bastionhost.bastion_host_id
 }
