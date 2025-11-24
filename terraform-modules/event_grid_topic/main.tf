@@ -21,7 +21,7 @@ resource "null_resource" "send_vm_event" {
   ]
 
   triggers = {
-    bastion_name = azurerm_bastion_host.bastion.name
+    bastion_name = azurerm_bastion_host.bastion.bastion_host_name
   }
 
   provisioner "local-exec" {
@@ -33,7 +33,7 @@ resource "null_resource" "send_vm_event" {
           @{
               id          = "vm-${var.vm_name}-event-${random_uuid.event.result}"
               eventType   = "VM.Created"
-              subject     = "terraform/vm/${azurerm_windows_virtual_machine.winvm.name}"
+              subject     = "terraform/vm/${var.vm_name}"
               eventTime   = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
               data        = @{
                   userName                = "${var.user_name}"
