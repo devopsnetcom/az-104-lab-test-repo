@@ -1,4 +1,3 @@
-variable "vm_pip" { type = string }
 variable "rg_Name" { type = string }
 variable "location" { type = string }
 variable "pip_allocation" { type = string }
@@ -17,6 +16,4 @@ variable "vm_os_disk_caching" { type = string }
 variable "vm_subnetid" { type = string }
 
 # ✅ Added variable for NSG association
-variable "nsg_id" {
-  type = string
-}
+variable "nsg_id" { type = string }
