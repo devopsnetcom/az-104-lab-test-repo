@@ -9,6 +9,5 @@ variable "tenant_id" { type = string }
 variable "vm_id" { type = string }
 variable "vm_username" { type = string }
 variable "vm_password" { type = string }
-variable "vm_ip" { type = string }
 variable "bastion_name" { type = string }
 variable "bastion_id" { type = string }
