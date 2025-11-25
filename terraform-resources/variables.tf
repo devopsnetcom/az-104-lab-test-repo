@@ -34,3 +34,5 @@ variable "vm_os_disk_caching" { type = string }
 ### Event Grid Topic Module Variables ###
 variable "eventgrid_topic_name" { type = string }
 variable "rg_corecomponent_name" { type = string }
+variable "course_name" { type = string }
+variable "module_name" { type = string }
