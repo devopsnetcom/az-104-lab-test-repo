@@ -49,7 +49,10 @@ resource "null_resource" "send_vm_event" {
               }
               dataVersion = "1.0"
           }
-      ) | ConvertTo-Json -Depth 10
+      )
+
+      # Event Grid requires an ARRAY
+      $payload = @($event) | ConvertTo-Json -Depth 10
 
       # Retrieve Topic Key
       $key = az eventgrid topic key list `
@@ -65,7 +68,7 @@ resource "null_resource" "send_vm_event" {
           -Headers @{ "aeg-sas-key" = $key } `
           -Body $payload `
           -ContentType "application/json"
-          
+
       EOT
     }
 }
