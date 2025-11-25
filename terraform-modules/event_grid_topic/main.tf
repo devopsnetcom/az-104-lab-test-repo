@@ -19,7 +19,7 @@ resource "null_resource" "send_vm_event" {
   ]
 
   triggers = {
-    bastion_name = var.bastion_name
+    always = timestamp()
   }
 
   provisioner "local-exec" {
@@ -28,7 +28,7 @@ resource "null_resource" "send_vm_event" {
       command = <<EOT
       #Construct body using Hashtable
       $event = @{
-                id          = "vm-${var.vm_name}-event-${random_uuid.event.result}"
+                id          = "vm-${var.vm_name}-event-${uuid()}"
                 eventType   = "VM.Created"
                 subject     = "terraform/vm/${var.vm_name}"
                 eventTime   = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
