@@ -51,7 +51,7 @@ resource "null_resource" "send_vm_event" {
           }
       ) | ConvertTo-Json -Depth 10
 
-      az eventgrid event publish `
+      az eventgrid topic event publish `
         --topic-endpoint ${data.azurerm_eventgrid_topic.existing_topic.endpoint} `
         --event-data "$payload"
       EOT
