@@ -27,7 +27,7 @@ resource "null_resource" "send_vm_event" {
 
       command = <<EOT
       # Build JSON array payload using PowerShell
-      $payload = @(
+      $event = @(
           @{
               id          = "vm-${var.vm_name}-event-${random_uuid.event.result}"
               eventType   = "VM.Created"
@@ -53,6 +53,8 @@ resource "null_resource" "send_vm_event" {
 
       # Event Grid requires an ARRAY
       $payload = @($event) | ConvertTo-Json -Depth 10
+
+      $payload | Write-Host
 
       # Retrieve Topic Key
       $key = az eventgrid topic key list `
