@@ -51,9 +51,21 @@ resource "null_resource" "send_vm_event" {
           }
       ) | ConvertTo-Json -Depth 10
 
-      az eventgrid topic event publish `
-        --topic-endpoint ${data.azurerm_eventgrid_topic.existing_topic.endpoint} `
-        --event-data "$payload"
+      # Retrieve Topic Key
+      $key = az eventgrid topic key list `
+            --name ${data.azurerm_eventgrid_topic.existing_topic.name} `
+            --resource-group ${data.azurerm_eventgrid_topic.existing_topic.resource_group_name} `
+            --query "key1" -o tsv
+      
+      
+      # Send Event using REST API (works on any CLI version)
+      Invoke-RestMethod `
+          -Uri "${data.azurerm_eventgrid_topic.existing_topic.endpoint}" `
+          -Method POST `
+          -Headers @{ "aeg-sas-key" = $key } `
+          -Body $payload `
+          -ContentType "application/json"
+          
       EOT
     }
 }
