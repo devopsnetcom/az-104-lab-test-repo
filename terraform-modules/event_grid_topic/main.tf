@@ -10,6 +10,10 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
   role_definition_name = "EventGrid Data Contributor"
   principal_id         = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
+  
+  lifecycle {
+    ignore_changes = [ principal_id ]
+  }
 }
 
 
