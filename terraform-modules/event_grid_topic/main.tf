@@ -6,11 +6,18 @@ data "azurerm_eventgrid_topic" "existing_topic" {
   resource_group_name = var.rg_corecomponent_name
 }
 
+# Use a data source to get the GUID of the specific role name
+data "azurerm_role_definition" "eventgrid_contributor" {
+  name  = "EventGrid Data Contributor"
+  scope = data.azurerm_eventgrid_topic.existing_topic.id
+}
+
 locals {
   # Clean up the principal ID input (e.g. removing graph API URLs)
   cleaned_principal_id = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
   
-  target_role_name     = "EventGrid Data Contributor"
+  # Reference the required GUID from the new data source
+  target_role_definition_id = data.azurerm_role_definition.eventgrid_contributor.id
 }
 
 # Data block to check if the Role Assignment exists
@@ -25,7 +32,7 @@ locals {
     for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : ra.id
 
     # Check if the principal_id matches AND the role_definition_name matches
-    if ra.principal_id == local.cleaned_principal_id && ra.role_definition_name == local.target_role_name
+    if ra.principal_id == local.cleaned_principal_id && ra.role_definition_id == local.target_role_definition_id
   ]
 
   # Determine if we need to create the resource (length is 0 if no match was found)
