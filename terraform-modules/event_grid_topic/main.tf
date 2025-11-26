@@ -6,14 +6,20 @@ data "azurerm_eventgrid_topic" "existing_topic" {
   resource_group_name = var.rg_corecomponent_name
 }
 
-resource "azurerm_role_assignment" "eventgrid_sender" {
+# Data block to check if the Role Assignment exists
+data "azurerm_role_assignment" "existing_sender" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
   role_definition_name = "EventGrid Data Contributor"
   principal_id         = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
-  
-  lifecycle {
-    ignore_changes = [ principal_id ]
-  }
+}
+
+# Create the Role Assignment only if it does NOT exist
+resource "azurerm_role_assignment" "eventgrid_sender" {
+  count = try(length(data.azurerm_role_assignment.existing_sender.id), 0) == 1 ? 0 : 1
+
+  scope                = data.azurerm_eventgrid_topic.existing_topic.id
+  role_definition_name = "EventGrid Data Contributor"
+  principal_id         = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
 }
 
 
