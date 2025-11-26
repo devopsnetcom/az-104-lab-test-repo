@@ -1,4 +1,6 @@
 
+resource "random_uuid" "event" {}
+
 data "azurerm_eventgrid_topic" "existing_topic" {
   name                = var.eventgrid_topic_name
   resource_group_name = var.rg_corecomponent_name
