@@ -1,26 +1,45 @@
 
-resource "random_uuid" "event" {}
-
 data "azurerm_eventgrid_topic" "existing_topic" {
   name                = var.eventgrid_topic_name
   resource_group_name = var.rg_corecomponent_name
 }
 
+locals {
+  # Clean up the principal ID input (e.g. removing graph API URLs)
+  cleaned_principal_id = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
+  
+  target_role_name     = "EventGrid Data Contributor"
+}
+
 # Data block to check if the Role Assignment exists
-data "azurerm_role_assignment" "existing_sender" {
+data "azurerm_role_assignments" "existing_sender_list" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
-  role_definition_name = "EventGrid Data Contributor"
-  principal_id         = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
+  principal_id         = local.cleaned_principal_id
+}
+
+locals {
+  # Filter the list of assignments returned by the data source
+  matching_assignments = [
+    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : ra.id
+
+    # Check if the principal_id matches AND the role_definition_name matches
+    if ra.principal_id == local.cleaned_principal_id && ra.role_definition_name == local.target_role_name
+  ]
+
+  # Determine if we need to create the resource (length is 0 if no match was found)
+  should_create_assignment = length(local.matching_assignments) == 0
 }
 
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
-  count = try(length(data.azurerm_role_assignment.existing_sender.id), 0) == 1 ? 0 : 1
+  # Count will be 1 if should_create_assignment is true, otherwise 0 (skipped)
+  count = local.should_create_assignment ? 1 : 0
 
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
-  role_definition_name = "EventGrid Data Contributor"
-  principal_id         = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
+  role_definition_name = local.target_role_name
+  principal_id         = local.cleaned_principal_id
 }
+
 
 
 resource "null_resource" "send_vm_event" {
