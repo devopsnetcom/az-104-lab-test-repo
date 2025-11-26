@@ -8,6 +8,10 @@ resource "azurerm_public_ip" "vm_pip" {
   sku                 = "Standard"
 }*/
 
+locals {
+  win_hostname = substr(replace(var.vm_name, "-", ""), 0, 15)
+}
+
 resource "azurerm_network_interface" "vm_nic" {
   name                = var.vm_nic
   resource_group_name = var.rg_Name
@@ -28,6 +32,7 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg_assoc" 
 
 resource "azurerm_windows_virtual_machine" "winvm" {
   name                = var.vm_name
+  computer_name       = local.win_hostname
   resource_group_name = var.rg_Name
   location            = var.location
   size                = var.vm_size
