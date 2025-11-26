@@ -1,4 +1,8 @@
 
+locals {
+  target_role_name = "EventGrid Data Contributor"
+}
+
 resource "random_uuid" "event" {}
 
 data "azurerm_eventgrid_topic" "existing_topic" {
@@ -8,7 +12,7 @@ data "azurerm_eventgrid_topic" "existing_topic" {
 
 # Use a data source to get the GUID of the specific role name
 data "azurerm_role_definition" "eventgrid_contributor" {
-  name  = "EventGrid Data Contributor"
+  name  = local.target_role_name
   scope = data.azurerm_eventgrid_topic.existing_topic.id
 }
 
@@ -49,7 +53,7 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
   principal_id         = local.cleaned_principal_id
 }
 
-
+################################################################
 
 resource "null_resource" "send_vm_event" {
   depends_on = [
