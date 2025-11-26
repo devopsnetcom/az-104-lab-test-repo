@@ -33,7 +33,7 @@ data "azurerm_role_assignments" "existing_sender_list" {
 locals {
   # Filter the list of assignments returned by the data source
   matching_assignments = [
-    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : ra.id
+    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : ra.role_definition_id
 
     # Check if the principal_id matches AND the role_definition_name matches
     if ra.principal_id == local.cleaned_principal_id && ra.role_definition_id == local.target_role_definition_id
