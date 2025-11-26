@@ -105,10 +105,20 @@ jobs:
             -backend-config="container_name=${{ env.TFSTATE_CONTAINER }}" \
             -backend-config="key=${{ env.TFSTATE_KEY }}"
 
+
+      - name: Terraform Workspace Select/Create
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          WORKSPACE="${{ github.event.inputs.user_name }}-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}"
+          terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
+          echo "Selected workspace: $WORKSPACE"
+
+
       - name: Prepare Dynamic Subnet Inputs
         run: |
           echo "subnet_names=$(echo '${{ github.event.inputs.subnet_NameList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
           echo "subnet_addresses=$(echo '${{ github.event.inputs.subnet_AddressList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
+
 
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
@@ -128,6 +138,7 @@ jobs:
             -var='subnet_AddressList=${{ env.subnet_addresses }}' \
             -var-file="terraform.tfvars"
 
+
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
         working-directory: ${{ env.WORKING_DIR }}
@@ -146,6 +157,7 @@ jobs:
             -var='subnet_AddressList=${{ env.subnet_addresses }}' \
             -var-file="terraform.tfvars"
 
+            
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         working-directory: ${{ env.WORKING_DIR }}
