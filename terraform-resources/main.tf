@@ -21,10 +21,10 @@ module "vnet01" {
   vnet_Address            = var.vnet_Address
   subnet_NameList         = var.subnet_NameList
   subnet_AddressList      = var.subnet_AddressList
-  basinton_subnet_Address = var.basinton_subnet_Address
 }
 
 #### Azure Bastion Host Deployment ####
+/*
 module "bastionhost" {
   source                    = "../terraform-modules/bastion_host"
   bastion_pip_name          = "${local.prefix}-vnet-bastion-IPv4"
@@ -36,7 +36,7 @@ module "bastionhost" {
   basinton_subnet_Id        = module.vnet01.basinton_subnet_Id
   basinton_ip_configuration = var.basinton_ip_configuration
   basiton_pip_sku           = var.basiton_pip_sku
-}
+}*/
 
 ######### Azure Windows Virtual Machine deployment #########
 module "winvm" {

@@ -41,7 +41,7 @@ on:
       vnet_Address:
         description: "Enter Virtual Network CIDR"
         required: true
-        default: "10.0.0.0/16"
+        default: "10.1.0.0/16"
 
       subnet_NameList:
         description: "Comma-separated list of subnet names"
@@ -51,7 +51,7 @@ on:
       subnet_AddressList:
         description: "Comma-separated list of subnet CIDRs"
         required: true
-        default: "10.0.1.0/24,10.0.2.0/24"
+        default: "10.1.1.0/24, 10.1.2.0/24"
 
 env:
   TF_IN_AUTOMATION: true
