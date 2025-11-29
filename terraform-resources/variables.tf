@@ -19,6 +19,9 @@ variable "basinton_ip_configuration" { type = string }
 variable "basiton_pip_sku" { type = string }
 */
 
+variable "bastion_name" { type = string }
+variable "bastion_id" { type = string }
+
 #### Variables for Windows Virtual Module defined here ####
 variable "pip_allocation" { type = string }
 variable "vm_nic" { type = string }

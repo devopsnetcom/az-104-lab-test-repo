@@ -25,6 +25,9 @@ basinton_ip_configuration   = "bastionConfig"
 basiton_pip_sku             = "Standard"
 */
 
+bastion_name = "AZ-104-Lab01-vnet-bastion"
+bastion_id   = "/subscriptions/8a430bad-846b-42a4-b674-138436f67a00/resourceGroups/rg-AZ-104-Lab01/providers/Microsoft.Network/bastionHosts/AZ-104-Lab01-vnet-bastion"
+
 ## Event grid Topic details
 eventgrid_topic_name = "egt-lab-eastus-001"
 rg_corecomponent_name = "RG-CoreComponents"
