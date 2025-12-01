@@ -76,6 +76,7 @@ resource "null_resource" "send_vm_event" {
                 eventTime   = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
                 data        = @{
                     userName                = "${var.user_name}"
+                    userIdentifier          = "${var.user_identifier}"
                     courseName              = "${var.course_name}"
                     moduleName              = "${var.module_name}"
                     vmName                  = "${var.vm_name}"

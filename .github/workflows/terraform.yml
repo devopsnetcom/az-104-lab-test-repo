@@ -23,6 +23,11 @@ on:
         required: true
         default: "azureuser"
 
+      user_identifier:
+        description: "Enter User Identifier"
+        required: true
+        default: "f9871570-eb5b-43eb-a877-101fd5c7bc3d"
+
       course_name:
         description: "Enter Course Name"
         required: true
@@ -128,6 +133,7 @@ jobs:
         run: |
           terraform plan \
             -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="user_identifier=${{ github.event.inputs.user_identifier }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
             -var="course_name=${{ github.event.inputs.course_name }}" \
@@ -147,6 +153,7 @@ jobs:
         run: |
           terraform apply -auto-approve \
             -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="user_identifier=${{ github.event.inputs.user_identifier }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
             -var="course_name=${{ github.event.inputs.course_name }}" \
@@ -166,6 +173,7 @@ jobs:
         run: |
           terraform destroy -auto-approve \
             -var="user_name=${{ github.event.inputs.user_name }}" \
+            -var="user_identifier=${{ github.event.inputs.user_identifier }}" \
             -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
             -var="github_spn_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
             -var="course_name=${{ github.event.inputs.course_name }}" \

@@ -80,4 +80,5 @@ module "eventgrid_topic" {
   vm_id                   = module.winvm.vm_id
   bastion_name            = var.bastion_name
   bastion_id              = var.bastion_id
+  user_identifier         = var.user_identifier
 }

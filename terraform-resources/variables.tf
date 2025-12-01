@@ -4,7 +4,8 @@ variable "location" { type = string }
 variable "rg_Name" { type = string }
 variable "user_name" { type = string }
 variable "tenant_id" { type = string }
-variable "github_spn_client_id" { type = string }  
+variable "github_spn_client_id" { type = string }
+variable "user_identifier" { type = string }
 
 ### VNET Module Variables Start ###
 variable "vnet_Name" { type = string }
