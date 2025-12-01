@@ -1,4 +1,12 @@
 
+locals {
+  prefix = lower(var.user_name)
+}
+
+locals {
+  mother_vnet_name = "${var.course_name}-${var.module_name}-vnet"
+}
+
 # ✅ DATA source to reference existing RG
 data "azurerm_resource_group" "rg" {
   name = var.rg_Name
@@ -8,8 +16,9 @@ data "azuread_service_principal" "github_spn" {
   client_id = var.github_spn_client_id
 }
 
-locals {
-  prefix = lower(var.user_name)
+data "azurerm_virtual_network" "parent_vnet" {
+  name                = local.mother_vnet_name
+  resource_group_name = var.rg_Name  
 }
 
 ############# VNET & SUBNET & Basinton Subnet Deployment Code #############
@@ -21,6 +30,8 @@ module "vnet01" {
   vnet_Address            = var.vnet_Address
   subnet_NameList         = var.subnet_NameList
   subnet_AddressList      = var.subnet_AddressList
+  mother_vnet_name        = data.azurerm_virtual_network.parent_vnet.name
+  mother_vnet_id          = data.azurerm_virtual_network.parent_vnet.id
 }
 
 #### Azure Bastion Host Deployment ####

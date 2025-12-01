@@ -18,6 +18,7 @@ vm_os_disk_strg_type        = "Standard_LRS"
 vm_os_disk_caching          = "ReadWrite"
 vnet_Address                = "10.1.0.0/16"
 subnet_AddressList          = ["10.1.1.0/24", "10.1.2.0/24"]
+
 /*
 basinton_subnet_Address     = ["10.0.50.0/26"]
 basiton_sku                 = "Standard"
