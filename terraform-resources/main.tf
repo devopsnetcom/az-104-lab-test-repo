@@ -16,6 +16,7 @@ data "azuread_service_principal" "github_spn" {
   client_id = var.github_spn_client_id
 }
 
+# Read specific Mother VNET
 data "azurerm_virtual_network" "parent_vnet" {
   name                = local.mother_vnet_name
   resource_group_name = var.rg_Name  
@@ -34,9 +35,7 @@ module "vnet01" {
   vnet_Name               = "${local.prefix}-vnet"
   rg_Name                 = data.azurerm_resource_group.rg.name
   location                = data.azurerm_resource_group.rg.location
-  vnet_Address            = var.vnet_Address
   subnet_NameList         = var.subnet_NameList
-  subnet_AddressList      = var.subnet_AddressList
   mother_vnet_name        = data.azurerm_virtual_network.parent_vnet.name
   mother_vnet_id          = data.azurerm_virtual_network.parent_vnet.id
   bastion_subnet_cidr     = data.azurerm_subnet.bastion.address_prefix

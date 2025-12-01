@@ -38,26 +38,6 @@ on:
         required: true
         default: "Lab01"
 
-      vnet_Name:
-        description: "Enter Virtual Network Name"
-        required: true
-        default: "vnet-demo"
-
-      vnet_Address:
-        description: "Enter Virtual Network CIDR"
-        required: true
-        default: "10.1.0.0/16"
-
-      subnet_NameList:
-        description: "Comma-separated list of subnet names"
-        required: true
-        default: "subnet-1,subnet-2"
-
-      subnet_AddressList:
-        description: "Comma-separated list of subnet CIDRs"
-        required: true
-        default: "10.1.1.0/24, 10.1.2.0/24"
-
 env:
   TF_IN_AUTOMATION: true
   TF_INPUT: false
@@ -121,12 +101,6 @@ jobs:
           echo "Selected workspace: $WORKSPACE"
 
 
-      - name: Prepare Dynamic Subnet Inputs
-        run: |
-          echo "subnet_names=$(echo '${{ github.event.inputs.subnet_NameList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
-          echo "subnet_addresses=$(echo '${{ github.event.inputs.subnet_AddressList }}' | tr ',' '\n' | jq -R . | jq -sc .)" >> $GITHUB_ENV
-
-
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
         working-directory: ${{ env.WORKING_DIR }}
@@ -140,10 +114,6 @@ jobs:
             -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
-            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
-            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
-            -var='subnet_NameList=${{ env.subnet_names }}' \
-            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
             -var-file="terraform.tfvars"
 
 
@@ -160,10 +130,6 @@ jobs:
             -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
-            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
-            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
-            -var='subnet_NameList=${{ env.subnet_names }}' \
-            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
             -var-file="terraform.tfvars"
 
 
@@ -180,8 +146,4 @@ jobs:
             -var="module_name=${{ github.event.inputs.module_name }}" \
             -var="rg_Name=rg-${{ github.event.inputs.course_name }}-${{ github.event.inputs.module_name }}" \
             -var="location=${{ github.event.inputs.location }}" \
-            -var="vnet_Name=${{ github.event.inputs.vnet_Name }}" \
-            -var="vnet_Address=${{ github.event.inputs.vnet_Address }}" \
-            -var='subnet_NameList=${{ env.subnet_names }}' \
-            -var='subnet_AddressList=${{ env.subnet_addresses }}' \
             -var-file="terraform.tfvars"

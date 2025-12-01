@@ -1,8 +1,56 @@
-resource "azurerm_virtual_network" "wec_vnet" {
-  name                = var.vnet_Name
+## Get all existing VNETs in the same RG (student + mother)
+data "azurerm_resources" "all_vnets" {
   resource_group_name = var.rg_Name
-  location            = var.location
-  address_space       = [var.vnet_Address]
+  type                = "Microsoft.Network/virtualNetworks"
+}
+
+## Extract only STUDENT VNETS (exclude the mother)
+locals {
+  student_vnets = [
+    for v in data.azurerm_resources.all_vnets.resources :
+    v if v.name != var.mother_vnet_name
+  ]
+}
+
+## Extract address spaces of existing student VNETs
+locals {
+  student_vnet_cidrs = flatten([
+    for v in local.student_vnets :
+    jsondecode(v.properties).addressSpace.addressPrefixes
+  ])
+}
+
+## Derive used second-octets → 10.<X>.0.0/16
+locals {
+  used_octets = length(local.student_vnet_cidrs) > 0 ? [
+    for cidr in local.student_vnet_cidrs :
+    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
+  ] : []
+}
+
+## Calculate the NEXT AVAILABLE OCTET
+locals {
+  next_octet = (
+    length(local.used_octets) == 0 ? 1 : max(local.used_octets) + 1
+  )
+}
+
+## Build NEW Student VNET, SUBNETS CIDR
+locals {
+  next_student_vnet_cidr = "10.${local.next_octet}.0.0/16"
+
+  next_student_subnet1 = cidrsubnet(local.next_student_vnet_cidr, 8, 0) # 10.X.0.0/24
+  next_student_subnet2 = cidrsubnet(local.next_student_vnet_cidr, 8, 1) # 10.X.1.0/24
+
+  subnet_AddressList = [next_student_subnet1, next_student_subnet2]
+}
+
+
+resource "azurerm_virtual_network" "wec_vnet" {
+  name                  = var.vnet_Name
+  resource_group_name   = var.rg_Name
+  location              = var.location
+  address_space         = [local.next_student_vnet_cidr]
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -10,7 +58,7 @@ resource "azurerm_subnet" "subnet" {
   name                 = var.subnet_NameList[count.index]
   virtual_network_name = azurerm_virtual_network.wec_vnet.name
   resource_group_name  = var.rg_Name
-  address_prefixes     = [var.subnet_AddressList[count.index]]
+  address_prefixes     = [local.subnet_AddressList[count.index]]
 }
 
 /* Both way Vnet Peering between Mother VNet and Student VNet */

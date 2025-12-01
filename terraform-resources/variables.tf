@@ -8,11 +8,7 @@ variable "github_spn_client_id" { type = string }
 variable "user_identifier" { type = string }
 
 ### VNET Module Variables Start ###
-variable "vnet_Name" { type = string }
-variable "vnet_Address" { type = string }
 variable "subnet_NameList" { type = list(string) }
-variable "subnet_AddressList" { type = list(string) }
-
 /*
 variable "basinton_subnet_Address" { type = list(string) }
 variable "basiton_sku" { type = string }

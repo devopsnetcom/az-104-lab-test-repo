@@ -16,8 +16,7 @@ vm_image_sku                = "2016-Datacenter"
 vm_image_version            = "latest"
 vm_os_disk_strg_type        = "Standard_LRS"
 vm_os_disk_caching          = "ReadWrite"
-vnet_Address                = "10.1.0.0/16"
-subnet_AddressList          = ["10.1.1.0/24", "10.1.2.0/24"]
+subnet_NameList             = ["subnet-1", "subnet-2"]
 
 /*
 basinton_subnet_Address     = ["10.0.50.0/26"]
