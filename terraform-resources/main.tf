@@ -21,6 +21,13 @@ data "azurerm_virtual_network" "parent_vnet" {
   resource_group_name = var.rg_Name  
 }
 
+locals {
+  bastion_subnet = [
+    for subnet in data.azurerm_virtual_network.parent_vnet.subnet_NameList : subnet
+    if subnet.name == "AzureBastionSubnet"
+  ][0]
+}
+
 ############# VNET & SUBNET & Basinton Subnet Deployment Code #############
 module "vnet01" {
   source                  = "../terraform-modules/network"
@@ -32,6 +39,7 @@ module "vnet01" {
   subnet_AddressList      = var.subnet_AddressList
   mother_vnet_name        = data.azurerm_virtual_network.parent_vnet.name
   mother_vnet_id          = data.azurerm_virtual_network.parent_vnet.id
+  bastion_subnet_cidr     = local.bastion_subnet.address_prefixes
 }
 
 #### Azure Bastion Host Deployment ####

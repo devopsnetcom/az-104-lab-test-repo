@@ -6,3 +6,4 @@ variable "subnet_NameList" { type = list(string) }
 variable "subnet_AddressList" { type = list(string) }
 variable "mother_vnet_name" { type = string }
 variable "mother_vnet_id" { type = string }
+variable "bastion_subnet_cidr" { type = string }
