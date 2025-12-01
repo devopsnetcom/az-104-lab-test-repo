@@ -8,7 +8,7 @@ data "azurerm_resources" "all_vnets" {
 locals {
   student_vnet_names = [
     for v in data.azurerm_resources.all_vnets.resources :
-    v if v.name != var.mother_vnet_name
+    v.name if v.name != var.mother_vnet_name
   ]
 }
 
