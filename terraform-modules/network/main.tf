@@ -42,7 +42,7 @@ locals {
   next_student_subnet1 = cidrsubnet(local.next_student_vnet_cidr, 8, 0) # 10.X.0.0/24
   next_student_subnet2 = cidrsubnet(local.next_student_vnet_cidr, 8, 1) # 10.X.1.0/24
 
-  subnet_AddressList = [next_student_subnet1, next_student_subnet2]
+  subnet_AddressList = [local.next_student_subnet1, local.next_student_subnet2]
 }
 
 
