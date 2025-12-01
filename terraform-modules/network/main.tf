@@ -6,17 +6,25 @@ data "azurerm_resources" "all_vnets" {
 
 ## Extract only STUDENT VNETS (exclude the mother)
 locals {
-  student_vnets = [
+  student_vnet_names = [
     for v in data.azurerm_resources.all_vnets.resources :
     v if v.name != var.mother_vnet_name
   ]
 }
 
+## Query Each Student VNET to Get Address Space
+data "azurerm_virtual_network" "student_vnets" {
+  for_each = toset(local.student_vnet_names)
+
+  name                = each.value
+  resource_group_name = var.rg_Name
+}
+
 ## Extract address spaces of existing student VNETs
 locals {
   student_vnet_cidrs = flatten([
-    for v in local.student_vnets :
-    jsondecode(v.properties).addressSpace.addressPrefixes
+    for v in data.azurerm_virtual_network.student_vnets :
+    v.address_space
   ])
 }
 
