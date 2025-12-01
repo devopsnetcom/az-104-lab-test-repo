@@ -23,7 +23,7 @@ data "azurerm_virtual_network" "parent_vnet" {
 
 locals {
   bastion_subnet = [
-    for subnet in data.azurerm_virtual_network.parent_vnet.subnet_NameList : subnet
+    for subnet in data.azurerm_virtual_network.parent_vnet.subnets : subnet
     if subnet.name == "AzureBastionSubnet"
   ][0]
 }
