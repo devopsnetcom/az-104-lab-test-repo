@@ -30,16 +30,21 @@ locals {
 
 ## Derive used second-octets → 10.<X>.0.0/16
 locals {
-  used_octets = length(local.student_vnet_cidrs) > 0 ? [
-    for cidr in local.student_vnet_cidrs :
-    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
-  ] : []
-}
+  used_octets_raw = [
+    for v in data.azurerm_virtual_network.student_vnets : try(
+      tonumber(split(".", v.address_space[0])[2]),
+      null
+    )
+  ]
 
-## Calculate the NEXT AVAILABLE OCTET
-locals {
+  # Keep only valid numbers
+  used_octets = compact(local.used_octets_raw)
+
+  # Determine the next available second-octet
   next_octet = (
-    length(local.used_octets) == 0 ? 1 : max(local.used_octets) + 1
+    length(local.used_octets) == 0 ?
+    1 :
+    max(local.used_octets...) + 1
   )
 }
 
