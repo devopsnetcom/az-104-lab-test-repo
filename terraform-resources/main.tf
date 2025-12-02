@@ -102,8 +102,8 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs */
+/* Debug Outputs
 output "student_vnet_names_debug" {
   value = module.vnet01.student_vnet_names_debug
-}
+}*/
 

@@ -13,10 +13,6 @@ locals {
   ]
 }
 
-output "student_vnet_names_debug" {
-  value = local.student_vnet_names
-}
-
 ## Query Each Student VNET to Get Address Space
 data "azurerm_virtual_network" "student_vnets" {
   for_each = toset(local.student_vnet_names)
