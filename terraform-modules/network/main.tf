@@ -30,22 +30,17 @@ locals {
 
 ## Derive used second-octets → 10.<X>.0.0/16
 locals {
-  used_octets_raw = [
-    for v in data.azurerm_virtual_network.student_vnets : try(
-      tonumber(split(".", v.address_space[0])[2]),
-      null
-    )
-  ]
-
-  # Keep only valid numbers
-  used_octets = compact(local.used_octets_raw)
+  used_octets = length(local.student_vnet_cidrs) > 0 ? [
+    for cidr in local.student_vnet_cidrs :
+    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
+  ] : []
 
   # Determine the next available second-octet
   next_octet = (
     length(local.used_octets) == 0 ?
     1 :
-    max(local.used_octets...) + 1
-  )
+    max(local.used_octets...)
+  ) + 1
 }
 
 ## Build NEW Student VNET, SUBNETS CIDR
@@ -58,37 +53,37 @@ locals {
   subnet_AddressList = [local.next_student_subnet1, local.next_student_subnet2]
 }
 
-
-resource "azurerm_virtual_network" "wec_vnet" {
+/* Create Student VNET and Subnets */
+resource "azurerm_virtual_network" "student_vnet" {
   name                  = var.vnet_Name
   resource_group_name   = var.rg_Name
   location              = var.location
   address_space         = [local.next_student_vnet_cidr]
 }
 
-resource "azurerm_subnet" "subnet" {
+resource "azurerm_subnet" "student_subnet" {
   count                = length(var.subnet_NameList)
   name                 = var.subnet_NameList[count.index]
-  virtual_network_name = azurerm_virtual_network.wec_vnet.name
+  virtual_network_name = azurerm_virtual_network.student_vnet.name
   resource_group_name  = var.rg_Name
   address_prefixes     = [local.subnet_AddressList[count.index]]
 }
 
 /* Both way Vnet Peering between Mother VNet and Student VNet */
 resource "azurerm_virtual_network_peering" "student_to_mother" {
-  name                      = "peer-student-to-mother"
+  name                      = "peer-${var.user_name}-to-mother"
   resource_group_name       = var.rg_Name
-  virtual_network_name      = azurerm_virtual_network.wec_vnet.name
+  virtual_network_name      = azurerm_virtual_network.student_vnet.name
   remote_virtual_network_id = var.mother_vnet_id
   allow_forwarded_traffic   = true
   allow_gateway_transit     = false
 }
 
 resource "azurerm_virtual_network_peering" "mother_to_student" {
-  name                      = "peer-mother-to-student"
+  name                      = "peer-mother-to-${var.user_name}"
   resource_group_name       = var.rg_Name
   virtual_network_name      = var.mother_vnet_name
-  remote_virtual_network_id = azurerm_virtual_network.wec_vnet.id
+  remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
   allow_forwarded_traffic   = true
 }
 

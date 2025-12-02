@@ -1,9 +1,9 @@
 output "vnet_Name" {
-  value = azurerm_virtual_network.wec_vnet.name
+  value = azurerm_virtual_network.student_vnet.name
 }
 
 output "vnet_Id" {
-  value = azurerm_virtual_network.wec_vnet.id
+  value = azurerm_virtual_network.student_vnet.id
 }
 
 output "subnet_Id" {

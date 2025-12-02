@@ -33,6 +33,7 @@ data "azurerm_subnet" "bastion" {
 module "vnet01" {
   source                  = "../terraform-modules/network"
   vnet_Name               = "${local.prefix}-vnet"
+  user_name               = local.prefix
   rg_Name                 = data.azurerm_resource_group.rg.name
   location                = data.azurerm_resource_group.rg.location
   subnet_NameList         = var.subnet_NameList
