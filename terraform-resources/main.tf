@@ -101,3 +101,9 @@ module "eventgrid_topic" {
   bastion_id              = var.bastion_id
   user_identifier         = var.user_identifier
 }
+
+/* Debug Outputs */
+output "student_vnet_names_debug" {
+  value = module.vnet01.student_vnet_names_debug
+}
+

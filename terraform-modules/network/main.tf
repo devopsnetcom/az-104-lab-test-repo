@@ -8,8 +8,13 @@ data "azurerm_resources" "all_vnets" {
 locals {
   student_vnet_names = [
     for v in data.azurerm_resources.all_vnets.resources :
-    v.name if v.name != var.mother_vnet_name
+    v.name
+    if lower(v.name) != lower(var.mother_vnet_name)
   ]
+}
+
+output "student_vnet_names_debug" {
+  value = local.student_vnet_names
 }
 
 ## Query Each Student VNET to Get Address Space
