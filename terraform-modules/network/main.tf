@@ -41,11 +41,7 @@ locals {
   ] : []
 
   # Determine the next available second-octet
-  next_octet = (
-    length(local.used_octets) == 0 ?
-    1 :
-    max(local.used_octets...)
-  ) + 1
+  next_octet = (length(local.used_octets) == 0 ? 1 : max(local.used_octets...) + 1)
 }
 
 ## Build NEW Student VNET, SUBNETS CIDR
