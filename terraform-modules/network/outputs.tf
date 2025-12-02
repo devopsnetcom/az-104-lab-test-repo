@@ -7,7 +7,7 @@ output "vnet_Id" {
 }
 
 output "subnet_Id" {
-  value = azurerm_subnet.subnet.*.id
+  value = azurerm_subnet.student_subnet.*.id
 }
 
 # ✅ Added NSG ID output
