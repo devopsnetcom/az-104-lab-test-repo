@@ -51,6 +51,10 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
   role_definition_name = local.target_role_name
   principal_id         = local.cleaned_principal_id
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 ################################################################
