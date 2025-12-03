@@ -1,10 +1,14 @@
-## Get all existing VNETs in the same RG (student + mother)
+###########################################
+# Get ALL VNETs from RG
+###########################################
 data "azurerm_resources" "all_vnets" {
   resource_group_name = var.rg_Name
   type                = "Microsoft.Network/virtualNetworks"
 }
 
-## Extract only STUDENT VNETS (exclude the mother)
+###########################################
+# Extract only student VNET names (exclude mother)
+########################################
 locals {
   student_vnet_names = [
     for v in data.azurerm_resources.all_vnets.resources :
@@ -13,7 +17,9 @@ locals {
   ]
 }
 
-## Query Each Student VNET to Get Address Space
+###########################################
+# Fetch each student VNET
+###########################################
 data "azurerm_virtual_network" "student_vnets" {
   for_each = toset(local.student_vnet_names)
 
@@ -21,7 +27,9 @@ data "azurerm_virtual_network" "student_vnets" {
   resource_group_name = var.rg_Name
 }
 
-## Extract address spaces of existing student VNETs
+###########################################
+# Extract CIDRs of all existing student VNETs
+###########################################
 locals {
   student_vnet_cidrs = flatten([
     for v in data.azurerm_virtual_network.student_vnets :
@@ -29,26 +37,57 @@ locals {
   ])
 }
 
-## Derive used second-octets → 10.<X>.0.0/16
+###########################################
+# Extract used second octets (10.X.0.0/16)
+###########################################
 locals {
   used_octets = length(local.student_vnet_cidrs) > 0 ? [
     for cidr in local.student_vnet_cidrs :
     tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
   ] : []
+}
 
-  # Determine the next available second-octet
+###########################################
+# Check if CURRENT student's VNET already exists
+###########################################
+locals {
+  current_vnet_exists = contains(local.student_vnet_names, var.vnet_Name)
+}
+
+###########################################
+# Get EXISTING CIDR for CURRENT user (if exists)
+###########################################
+locals {
+  current_vnet_existing_cidr = (
+    local.current_vnet_exists ? data.azurerm_virtual_network.student_vnets[var.vnet_Name].address_space[0] : null
+  )
+}
+
+
+###########################################
+# Calculate next available octet (only for NEW vnets)
+###########################################
+locals {
   next_octet = (length(local.used_octets) == 0 ? 1 : max(local.used_octets...) + 1)
 }
 
-## Build NEW Student VNET, SUBNETS CIDR
+###########################################
+# FINAL → Decide CIDR for this student VNET
+# If exists → reuse old CIDR
+# If new → assign next available range
+###########################################
 locals {
-  next_student_vnet_cidr = "10.${local.next_octet}.0.0/16"
+  next_student_vnet_cidr = (
+    local.current_vnet_exists ? local.current_vnet_existing_cidr : "10.${local.next_octet}.0.0/16"
+  )
 
-  next_student_subnet1 = cidrsubnet(local.next_student_vnet_cidr, 8, 0) # 10.X.0.0/24
-  next_student_subnet2 = cidrsubnet(local.next_student_vnet_cidr, 8, 1) # 10.X.1.0/24
+  next_student_subnet1 = cidrsubnet(local.next_student_vnet_cidr, 8, 0)
+  next_student_subnet2 = cidrsubnet(local.next_student_vnet_cidr, 8, 1)
 
-  subnet_AddressList = [local.next_student_subnet1, local.next_student_subnet2]
+  subnet_AddressList = [ local.next_student_subnet1, local.next_student_subnet2 ]
 }
+
+############################################################################################################
 
 /* Create Student VNET and Subnets */
 resource "azurerm_virtual_network" "student_vnet" {
