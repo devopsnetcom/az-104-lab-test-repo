@@ -27,6 +27,7 @@ data "azurerm_role_assignments" "existing_sender_list" {
   #principal_id         = local.cleaned_principal_id
 }
 
+# Logic to determine if Role Assignment needs to be created
 locals {
 
   # Normalized view of existing assignments (lowercase, GUID-only principal)
@@ -49,13 +50,23 @@ locals {
   should_create_assignment = length(local.matching_assignments) == 0
 }
 
+# check if role assignment exists
 locals {
-  assignment_enabled = local.should_create_assignment ? {
-    "eventgrid_sender" = {
-      principal_id = local.cleaned_principal_id
-      role_def_name  = local.target_role_name
-    }
-  } : {}
+  role_exists = length(local.matching_assignments) > 0
+}
+
+locals {
+  assignment_enabled = local.role_exists ? {
+      "eventgrid_sender" = {
+        principal_id  = local.cleaned_principal_id
+        role_def_name = local.target_role_name
+      }
+    } : local.should_create_assignment ? {
+      "eventgrid_sender" = {
+        principal_id  = local.cleaned_principal_id
+        role_def_name = local.target_role_name
+      }
+    } : {}
 }
 
 # Create the Role Assignment only if it does NOT exist
@@ -65,15 +76,6 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
   role_definition_name = each.value.role_def_name
   principal_id         = each.value.principal_id
-
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes = [
-      principal_id,
-      role_definition_id
-    ]
-    prevent_destroy = true
-  }
 
 }
 
