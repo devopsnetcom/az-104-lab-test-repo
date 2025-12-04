@@ -107,3 +107,7 @@ output "principal_id_debug" {
   value = data.azuread_service_principal.github_spn.id
 }
 
+output "name" {
+  value = lower(replace(replace(lower(coalesce(data.azuread_service_principal.github_spn.id, "")),"/serviceprincipals/",""),"/",""))
+}
+
