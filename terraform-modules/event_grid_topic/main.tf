@@ -18,8 +18,7 @@ data "azurerm_role_definition" "eventgrid_contributor" {
 
 
 locals {
-  # Clean up the principal ID input (e.g. removing graph API URLs)
-  cleaned_principal_id = lower(replace(replace(coalesce(var.principal_id,""), "/serviceprincipals/", ""), "/", ""))
+  cleaned_principal_id = lower(replace(replace(lower(coalesce(var.principal_id, "")),"/serviceprincipals/",""),"/",""))
 }
 
 # Data block to check if the Role Assignment exists

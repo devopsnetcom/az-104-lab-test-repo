@@ -102,8 +102,8 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs
-output "student_vnet_names_debug" {
-  value = module.vnet01.student_vnet_names_debug
-}*/
+/* Debug Outputs */
+output "principal_id_debug" {
+  value = data.azuread_service_principal.github_spn.id
+}
 
