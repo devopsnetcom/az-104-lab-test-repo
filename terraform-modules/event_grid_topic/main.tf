@@ -80,7 +80,6 @@ output "should_create_assignment" {
 
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
-  # Count will be 1 if should_create_assignment is true, otherwise 0 (skipped)
   for_each = local.assignment_enabled
 
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
