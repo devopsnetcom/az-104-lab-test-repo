@@ -16,45 +16,56 @@ data "azurerm_role_definition" "eventgrid_contributor" {
   scope = data.azurerm_eventgrid_topic.existing_topic.id
 }
 
+# Clean the principal_id to a normalized format (lowercase, GUID-only)
 locals {
-  # Clean up the principal ID input (e.g. removing graph API URLs)
-  cleaned_principal_id = replace(replace(var.principal_id, "/servicePrincipals/", ""), "/","")
-  
-  # Reference the required GUID from the new data source
-  target_role_definition_id = data.azurerm_role_definition.eventgrid_contributor.id
+  cleaned_principal_id = lower(replace(replace(lower(coalesce(var.principal_id, "")),"/serviceprincipals/",""),"/",""))
 }
 
 # Data block to check if the Role Assignment exists
 data "azurerm_role_assignments" "existing_sender_list" {
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
-  principal_id         = local.cleaned_principal_id
+  #principal_id         = local.cleaned_principal_id
 }
 
 locals {
-  # Filter the list of assignments returned by the data source
-  matching_assignments = [
-    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : ra.role_definition_id
 
-    # Check if the principal_id matches AND the role_definition_name matches
-    if ra.principal_id == local.cleaned_principal_id && ra.role_definition_id == local.target_role_definition_id
+  # Normalized view of existing assignments (lowercase, GUID-only principal)
+  normalized_assignments = [
+    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : {
+      principal_id_norm = lower(replace(replace(lower(coalesce(ra.principal_id, "")),"/serviceprincipals/",""),"/",""))
+
+      role_def_id_norm = lower(coalesce(ra.role_definition_id, ""))
+    }
   ]
 
-  # Determine if we need to create the resource (length is 0 if no match was found)
+  target_role_def_id_norm = lower(data.azurerm_role_definition.eventgrid_contributor.id)
+
+  # find matching assignment(s) for our SPN + role
+  matching_assignments = [
+    for na in local.normalized_assignments : na
+    if na.principal_id_norm == local.cleaned_principal_id && na.role_def_id_norm == local.target_role_def_id_norm
+  ]
+
   should_create_assignment = length(local.matching_assignments) == 0
+}
+
+locals {
+  assignment_enabled = local.should_create_assignment ? {
+    "eventgrid_sender" = {
+      principal_id = local.cleaned_principal_id
+      role_def_name  = local.target_role_name
+    }
+  } : {}
 }
 
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
-  # Count will be 1 if should_create_assignment is true, otherwise 0 (skipped)
-  count = local.should_create_assignment ? 1 : 0
+  for_each = local.assignment_enabled
 
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
-  role_definition_name = local.target_role_name
-  principal_id         = local.cleaned_principal_id
+  role_definition_name = each.value.role_def_name
+  principal_id         = each.value.principal_id
 
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 ################################################################
