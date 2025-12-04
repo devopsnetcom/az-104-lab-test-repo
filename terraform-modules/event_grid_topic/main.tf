@@ -58,26 +58,6 @@ locals {
   } : {}
 }
 
-output "cleaned_principal_id" {
-  value = local.cleaned_principal_id
-}
-
-output "normalized_assignments" {
-  value = local.normalized_assignments
-}
-
-output "target_role_def_id_norm" {
-  value = local.target_role_def_id_norm
-}
-
-output "matching_assignments" {
-  value = local.matching_assignments
-}
-
-output "should_create_assignment" {
-  value = local.should_create_assignment
-}
-
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
   for_each = local.assignment_enabled

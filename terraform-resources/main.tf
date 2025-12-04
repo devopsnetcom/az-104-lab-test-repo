@@ -102,30 +102,10 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs */
+/* Debug Outputs
 output "principal_id_debug" {
   value = data.azuread_service_principal.github_spn.id
-}
-
-output "cleaned_principal_id" {
-  value = module.eventgrid_topic.cleaned_principal_id
-}
-
-output "normalized_assignments" {
-  value = module.eventgrid_topic.normalized_assignments
-}
-
-output "target_role_def_id_norm" {
-  value = module.eventgrid_topic.target_role_def_id_norm
-}
-
-output "matching_assignments" {
-  value = module.eventgrid_topic.matching_assignments
-}
-
-output "should_create_assignment" {
-  value = module.eventgrid_topic.should_create_assignment
-}
+} */
 
 
 
