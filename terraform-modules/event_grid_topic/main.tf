@@ -16,7 +16,7 @@ data "azurerm_role_definition" "eventgrid_contributor" {
   scope = data.azurerm_eventgrid_topic.existing_topic.id
 }
 
-
+# Clean the principal_id to a normalized format (lowercase, GUID-only)
 locals {
   cleaned_principal_id = lower(replace(replace(lower(coalesce(var.principal_id, "")),"/serviceprincipals/",""),"/",""))
 }
