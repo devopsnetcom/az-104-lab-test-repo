@@ -19,7 +19,7 @@ data "azurerm_role_definition" "eventgrid_contributor" {
 
 locals {
   # Clean up the principal ID input (e.g. removing graph API URLs)
-  cleaned_principal_id = lower(replace(replace(coalesce(ra.principal_id,""), "/serviceprincipals/", ""), "/", ""))
+  cleaned_principal_id = lower(replace(replace(coalesce(var.principal_id,""), "/serviceprincipals/", ""), "/", ""))
 }
 
 # Data block to check if the Role Assignment exists
@@ -32,7 +32,7 @@ locals {
 
   # Normalized view of existing assignments (lowercase, GUID-only principal)
   normalized_assignments = [
-    for ra in data.azurerm_role_assignments.topic_assignments.role_assignments : {
+    for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : {
       id                 = ra.id
       principal_id_norm  = lower(replace(replace(coalesce(ra.principal_id,""), "/serviceprincipals/", ""), "/", ""))
       role_def_id_norm   = lower(coalesce(ra.role_definition_id, ""))
