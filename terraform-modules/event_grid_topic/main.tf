@@ -36,9 +36,6 @@ locals {
       principal_id_norm = lower(replace(replace(coalesce(ra.principal_id, ""), "/serviceprincipals/", ""),"/", ""))
 
       role_def_id_norm = lower(coalesce(ra.role_definition_id, ""))
-
-      # no ID available → produce a dummy value (safe)
-      synthetic_id = "${ra.scope}-${ra.principal_id}-${ra.role_definition_id}"
     }
   ]
 
