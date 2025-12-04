@@ -43,11 +43,19 @@ locals {
   # find matching assignment(s) for our SPN + role
   matching_assignments = [
     for na in local.normalized_assignments : na
-    if na.principal_id_norm == local.cleaned_principal_id
-      && na.role_def_id_norm == local.target_role_def_id_norm
+    if na.principal_id_norm == local.cleaned_principal_id && na.role_def_id_norm == local.target_role_def_id_norm
   ]
 
   should_create_assignment = length(local.matching_assignments) == 0
+}
+
+locals {
+  assignment_enabled = local.should_create_assignment ? {
+    "eventgrid_sender" = {
+      principal_id = local.cleaned_principal_id
+      role_def_name  = local.target_role_name
+    }
+  } : {}
 }
 
 output "cleaned_principal_id" {
@@ -73,11 +81,11 @@ output "should_create_assignment" {
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
   # Count will be 1 if should_create_assignment is true, otherwise 0 (skipped)
-  count = local.should_create_assignment ? 1 : 0
+  for_each = local.assignment_enabled
 
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
-  role_definition_name = local.target_role_name
-  principal_id         = local.cleaned_principal_id
+  role_definition_name = each.value.role_def_name
+  principal_id         = each.value.principal_id
 
 }
 
