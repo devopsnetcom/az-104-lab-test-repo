@@ -33,9 +33,12 @@ locals {
   # Normalized view of existing assignments (lowercase, GUID-only principal)
   normalized_assignments = [
     for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : {
-      id                 = ra.id
-      principal_id_norm  = lower(replace(replace(coalesce(ra.principal_id,""), "/serviceprincipals/", ""), "/", ""))
-      role_def_id_norm   = lower(coalesce(ra.role_definition_id, ""))
+      principal_id_norm = lower(replace(replace(coalesce(ra.principal_id, ""), "/serviceprincipals/", ""),"/", ""))
+
+      role_def_id_norm = lower(coalesce(ra.role_definition_id, ""))
+
+      # no ID available → produce a dummy value (safe)
+      synthetic_id = "${ra.scope}-${ra.principal_id}-${ra.role_definition_id}"
     }
   ]
 
@@ -43,18 +46,18 @@ locals {
 
   # find matching assignment(s) for our SPN + role
   matching_assignments = [
-    for a in local.normalized_assignments :
-    a if a.principal_id_norm == local.cleaned_principal_id && a.role_def_id_norm == local.target_role_def_id_norm
+    for na in local.normalized_assignments : na
+    if na.principal_id_norm == local.cleaned_principal_id
+      && na.role_def_id_norm == local.target_role_def_id_norm
   ]
 
-  # do we need to create? (true when no matching assignment found)
-  need_create_assignment = length(local.matching_assignments) == 0
+  should_create_assignment = length(local.matching_assignments) == 0
 }
 
 # Create the Role Assignment only if it does NOT exist
 resource "azurerm_role_assignment" "eventgrid_sender" {
   # Count will be 1 if should_create_assignment is true, otherwise 0 (skipped)
-  count = local.need_create_assignment ? 1 : 0
+  count = local.should_create_assignment ? 1 : 0
 
   scope                = data.azurerm_eventgrid_topic.existing_topic.id
   role_definition_name = local.target_role_name
