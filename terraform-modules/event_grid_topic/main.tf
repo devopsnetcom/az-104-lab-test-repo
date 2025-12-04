@@ -66,6 +66,15 @@ resource "azurerm_role_assignment" "eventgrid_sender" {
   role_definition_name = each.value.role_def_name
   principal_id         = each.value.principal_id
 
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      principal_id,
+      role_definition_id
+    ]
+    prevent_destroy = true
+  }
+
 }
 
 ################################################################
