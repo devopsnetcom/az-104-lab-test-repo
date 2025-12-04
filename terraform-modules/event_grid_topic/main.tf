@@ -32,7 +32,7 @@ locals {
   # Normalized view of existing assignments (lowercase, GUID-only principal)
   normalized_assignments = [
     for ra in data.azurerm_role_assignments.existing_sender_list.role_assignments : {
-      principal_id_norm = lower(replace(replace(coalesce(ra.principal_id, ""), "/serviceprincipals/", ""),"/", ""))
+      principal_id_norm = lower(replace(replace(lower(coalesce(ra.principal_id, "")),"/serviceprincipals/",""),"/",""))
 
       role_def_id_norm = lower(coalesce(ra.role_definition_id, ""))
     }
