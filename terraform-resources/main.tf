@@ -5,6 +5,7 @@ locals {
 
 locals {
   mother_vnet_name = "${var.course_name}-${var.module_name}-vnet"
+  bastion_name = "${var.course_name}-${var.module_name}-vnet-bastion"
 }
 
 # ✅ DATA source to reference existing RG
@@ -28,6 +29,13 @@ data "azurerm_subnet" "bastion" {
   virtual_network_name = data.azurerm_virtual_network.parent_vnet.name
   resource_group_name  = var.rg_Name
 }
+
+# Get the Bastion Host
+data "azurerm_bastion_host" "bastion_host" {
+  name                = var.bastion_name
+  resource_group_name = var.rg_Name
+}
+
 
 ############# VNET & SUBNET & Basinton Subnet Deployment Code #############
 module "vnet01" {
@@ -97,8 +105,8 @@ module "eventgrid_topic" {
   vm_username             = var.vm_username
   vm_password             = var.vm_password
   vm_id                   = module.winvm.vm_id
-  bastion_name            = var.bastion_name
-  bastion_id              = var.bastion_id
+  bastion_name            = local.bastion_name
+  bastion_id              = data.azurerm_bastion_host.bastion_host.id
   user_identifier         = var.user_identifier
 }
 
