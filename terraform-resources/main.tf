@@ -32,7 +32,7 @@ data "azurerm_subnet" "bastion" {
 
 # Get the Bastion Host
 data "azurerm_bastion_host" "bastion_host" {
-  name                = var.bastion_name
+  name                = local.bastion_name
   resource_group_name = var.rg_Name
 }
 
