@@ -50,21 +50,6 @@ module "vnet01" {
   bastion_subnet_cidr     = data.azurerm_subnet.bastion.address_prefix
 }
 
-#### Azure Bastion Host Deployment ####
-/*
-module "bastionhost" {
-  source                    = "../terraform-modules/bastion_host"
-  bastion_pip_name          = "${local.prefix}-vnet-bastion-IPv4"
-  bastion_Name              = "${local.prefix}-vnet-bastion"
-  rg_Name                   = data.azurerm_resource_group.rg.name
-  location                  = data.azurerm_resource_group.rg.location
-  pip_allocation            = var.pip_allocation
-  basiton_sku               = var.basiton_sku
-  basinton_subnet_Id        = module.vnet01.basinton_subnet_Id
-  basinton_ip_configuration = var.basinton_ip_configuration
-  basiton_pip_sku           = var.basiton_pip_sku
-}*/
-
 ######### Azure Windows Virtual Machine deployment #########
 module "winvm" {
   source               = "../terraform-modules/virtual_machine"

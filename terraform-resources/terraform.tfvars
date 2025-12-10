@@ -18,13 +18,6 @@ vm_os_disk_strg_type        = "Standard_LRS"
 vm_os_disk_caching          = "ReadWrite"
 subnet_NameList             = ["subnet-1", "subnet-2"]
 
-/*
-basinton_subnet_Address     = ["10.0.50.0/26"]
-basiton_sku                 = "Standard"
-basinton_ip_configuration   = "bastionConfig"
-basiton_pip_sku             = "Standard"
-*/
-
 ## Event grid Topic details
 eventgrid_topic_name = "egt-lab-eastus-001"
 rg_corecomponent_name = "RG-CoreComponents"
