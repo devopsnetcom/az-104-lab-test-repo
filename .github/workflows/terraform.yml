@@ -1,4 +1,4 @@
-name: Terraform Azure VM Deployment
+name: Terraform SkillLabs365 Lab Deployment
 
 on:
   workflow_dispatch:
