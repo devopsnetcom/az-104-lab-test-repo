@@ -37,7 +37,7 @@ module "vnet01" {
   subnet_NameList         = var.subnet_NameList
   mother_vnet_name        = data.azurerm_virtual_network.parent_vnet.name
   mother_vnet_id          = data.azurerm_virtual_network.parent_vnet.id
-  guacamole_subnet_cidr   = data.azurerm_subnet.guacamole_subnet.address_prefix
+  guacamole_subnet_cidr   = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
 }
 
 ######### Azure Windows Virtual Machine deployment #########
@@ -84,10 +84,10 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs */
+/* Debug Outputs
 output "guacamole_subnet_cidr" {
   value = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
-}
+} */
 
 
 
