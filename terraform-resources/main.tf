@@ -22,7 +22,7 @@ data "azurerm_virtual_network" "parent_vnet" {
 # Read existing guacamole subnet
 data "azurerm_subnet" "guacamole_subnet" {
   name                 = var.guacamole_subnet_name
-  virtual_network_name = var.shared_vnet_name
+  virtual_network_name = data.azurerm_virtual_network.parent_vnet.name
   resource_group_name  = var.rg_corecomponent_name
 }
 
@@ -86,7 +86,7 @@ module "eventgrid_topic" {
 
 /* Debug Outputs */
 output "guacamole_subnet_cidr" {
-  value = data.azurerm_subnet.guacamole_subnet.address_prefix
+  value = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
 }
 
 
