@@ -1,8 +1,7 @@
-
+# Local variable to create resource names with user prefix
 locals {
   prefix = lower(var.user_name)
 }
-
 
 # ✅ DATA source to reference existing RG
 data "azurerm_resource_group" "rg" {
