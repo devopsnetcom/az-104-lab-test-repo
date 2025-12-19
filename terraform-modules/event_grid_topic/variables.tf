@@ -1,6 +1,5 @@
 variable "eventgrid_topic_name" { type = string }
 variable "rg_corecomponent_name" { type = string }
-variable "principal_id" { type = string }
 variable "user_name" { type = string }
 variable "course_name" { type = string }
 variable "module_name" { type = string }

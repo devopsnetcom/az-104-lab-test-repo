@@ -71,7 +71,6 @@ module "eventgrid_topic" {
   source                  = "../terraform-modules/event_grid_topic"
   eventgrid_topic_name    = var.eventgrid_topic_name
   rg_corecomponent_name   = var.rg_corecomponent_name
-  principal_id            = data.azuread_service_principal.github_spn.id
   tenant_id               = var.tenant_id
   user_name               = local.prefix
   course_name             = var.course_name
