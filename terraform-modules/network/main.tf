@@ -117,7 +117,7 @@ resource "azurerm_virtual_network_peering" "student_to_mother" {
 
 resource "azurerm_virtual_network_peering" "mother_to_student" {
   name                      = "peer-mother-to-${var.user_name}"
-  resource_group_name       = var.rg_Name
+  resource_group_name       = var.rg_corecomponent_name
   virtual_network_name      = var.mother_vnet_name
   remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
   allow_forwarded_traffic   = true

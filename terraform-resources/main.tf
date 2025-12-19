@@ -32,6 +32,7 @@ module "vnet01" {
   vnet_Name               = "${local.prefix}-vnet"
   user_name               = local.prefix
   rg_Name                 = data.azurerm_resource_group.rg.name
+  rg_corecomponent_name   = var.rg_corecomponent_name
   location                = data.azurerm_resource_group.rg.location
   subnet_NameList         = var.subnet_NameList
   mother_vnet_name        = data.azurerm_virtual_network.parent_vnet.name
@@ -83,10 +84,10 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs
-output "principal_id_debug" {
-  value = data.azuread_service_principal.github_spn.id
-} */
+/* Debug Outputs */
+output "guacamole_subnet_cidr" {
+  value = data.azurerm_subnet.guacamole_subnet.address_prefix
+}
 
 
 
