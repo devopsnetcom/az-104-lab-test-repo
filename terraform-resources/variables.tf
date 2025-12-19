@@ -14,7 +14,6 @@ variable "subnet_NameList" { type = list(string) }
 variable "pip_allocation" { type = string }
 variable "vm_nic" { type = string }
 variable "ip_configuration" { type = string }
-variable "vm_name" { type = string }
 variable "vm_size" { type = string }
 variable "vm_username" { type = string }
 variable "vm_password" { type = string }
@@ -30,3 +29,5 @@ variable "eventgrid_topic_name" { type = string }
 variable "rg_corecomponent_name" { type = string }
 variable "course_name" { type = string }
 variable "module_name" { type = string }
+variable "shared_vnet_name" {}
+variable "guacamole_subnet_name" { type = string }

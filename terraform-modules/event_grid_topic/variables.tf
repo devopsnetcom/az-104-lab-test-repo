@@ -1,6 +1,5 @@
 variable "eventgrid_topic_name" { type = string }
 variable "rg_corecomponent_name" { type = string }
-variable "principal_id" { type = string }
 variable "user_name" { type = string }
 variable "course_name" { type = string }
 variable "module_name" { type = string }
@@ -9,6 +8,5 @@ variable "tenant_id" { type = string }
 variable "vm_id" { type = string }
 variable "vm_username" { type = string }
 variable "vm_password" { type = string }
-variable "bastion_name" { type = string }
-variable "bastion_id" { type = string }
+variable "vm_private_ip" { type = string }
 variable "user_identifier" { type = string }

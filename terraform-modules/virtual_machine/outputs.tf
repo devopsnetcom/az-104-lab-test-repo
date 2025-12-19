@@ -23,3 +23,7 @@ output "vm_size" {
   description = "The Size of the Virtual Machine"
   value       = azurerm_windows_virtual_machine.winvm.size
 }
+
+output "vm_private_ip" {
+  value = azurerm_windows_virtual_machine.winvm.private_ip_address
+}

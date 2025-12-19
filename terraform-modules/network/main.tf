@@ -106,6 +106,15 @@ resource "azurerm_subnet" "student_subnet" {
 }
 
 /* Both way Vnet Peering between Mother VNet and Student VNet */
+
+resource "azurerm_virtual_network_peering" "mother_to_student" {
+  name                      = "peer-mother-to-${var.user_name}"
+  resource_group_name       = var.rg_corecomponent_name
+  virtual_network_name      = var.mother_vnet_name
+  remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
+  allow_forwarded_traffic   = true
+}
+
 resource "azurerm_virtual_network_peering" "student_to_mother" {
   name                      = "peer-${var.user_name}-to-mother"
   resource_group_name       = var.rg_Name
@@ -113,14 +122,10 @@ resource "azurerm_virtual_network_peering" "student_to_mother" {
   remote_virtual_network_id = var.mother_vnet_id
   allow_forwarded_traffic   = true
   allow_gateway_transit     = false
-}
 
-resource "azurerm_virtual_network_peering" "mother_to_student" {
-  name                      = "peer-mother-to-${var.user_name}"
-  resource_group_name       = var.rg_Name
-  virtual_network_name      = var.mother_vnet_name
-  remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
-  allow_forwarded_traffic   = true
+  depends_on = [ 
+    azurerm_virtual_network_peering.mother_to_student 
+  ]
 }
 
 
@@ -133,26 +138,14 @@ resource "azurerm_network_security_group" "vm_nsg" {
   resource_group_name = var.rg_Name
 
   security_rule {
-    name                       = "Allow-Bastion-RDP"
+    name                       = "Allow-Guac-SSH"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "3389"
-    source_address_prefix      = var.bastion_subnet_cidr
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "Allow-Bastion-SSH"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = var.bastion_subnet_cidr
+    source_address_prefix      = var.guacamole_subnet_cidr
     destination_address_prefix = "*"
   }
 
