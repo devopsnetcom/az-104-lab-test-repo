@@ -109,9 +109,8 @@ resource "null_resource" "send_vm_event" {
                     vmUsername              = "${var.vm_username}"
                     vmPassword              = "${var.vm_password}" 
                     vmResourceId            = "${var.vm_id}"
-                    vmConnectURL            = "https://portal.azure.com/#@${var.tenant_id}/resource${var.vm_id}/bastionHost"
-                    bastionHostResourceId   = "${var.bastion_id}"
-                    bastionUrl              = "https://portal.azure.com/#resource${var.bastion_id}"                  
+                    vmPrivateIP             = "${var.vm_private_ip}"
+                    vmConnectURL            = "https://portal.azure.com/#@${var.tenant_id}/resource${var.vm_id}/bastionHost"                 
                     status                  = "Ready"
                 }
                 dataVersion = "1.0"

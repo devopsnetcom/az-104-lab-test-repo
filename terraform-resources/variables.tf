@@ -30,3 +30,5 @@ variable "eventgrid_topic_name" { type = string }
 variable "rg_corecomponent_name" { type = string }
 variable "course_name" { type = string }
 variable "module_name" { type = string }
+variable "shared_vnet_name" {}
+variable "guacamole_subnet_name" { type = string }

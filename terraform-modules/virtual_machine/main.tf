@@ -1,13 +1,4 @@
 
-/* As we'll connecting with Basinton host, no need for Public IP
-resource "azurerm_public_ip" "vm_pip" {
-  name                = var.vm_pip
-  resource_group_name = var.rg_Name
-  location            = var.location
-  allocation_method   = var.pip_allocation
-  sku                 = "Standard"
-}*/
-
 locals {
   win_hostname = substr(replace(var.vm_name, "-", ""), 0, 15)
 }

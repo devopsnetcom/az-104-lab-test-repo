@@ -6,7 +6,6 @@ vm_nic             = "win_vm_nic"
 ip_configuration   = "ip_config"
 
 ### Windows Virtual Machine Deployment
-vm_name                     = "aicert-test-vm"
 vm_size                     = "Standard_B2s"
 vm_username                 = "AdminUser"
 vm_password                 = "Admin@12356"
@@ -23,3 +22,7 @@ eventgrid_topic_name = "egt-lab-eastus-001"
 rg_corecomponent_name = "RG-CoreComponents"
 course_name = "AZ-104"
 module_name = "Lab01"
+
+#guacamole network details
+shared_vnet_name       = "shared-vnet"
+guacamole_subnet_name  = "guac-subnet"
