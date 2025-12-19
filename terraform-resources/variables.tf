@@ -14,7 +14,6 @@ variable "subnet_NameList" { type = list(string) }
 variable "pip_allocation" { type = string }
 variable "vm_nic" { type = string }
 variable "ip_configuration" { type = string }
-variable "vm_name" { type = string }
 variable "vm_size" { type = string }
 variable "vm_username" { type = string }
 variable "vm_password" { type = string }
