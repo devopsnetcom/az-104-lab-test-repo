@@ -1,4 +1,10 @@
 
+# Retrieve existing Event Grid Topic
+data "azurerm_eventgrid_topic" "existing_topic" {
+  name                = var.eventgrid_topic_name
+  resource_group_name = var.rg_corecomponent_name
+}
+
 # Send VM Created Event to Event Grid Topic
 resource "null_resource" "send_vm_event" {
   
