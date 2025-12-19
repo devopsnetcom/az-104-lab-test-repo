@@ -133,20 +133,8 @@ resource "azurerm_network_security_group" "vm_nsg" {
   resource_group_name = var.rg_Name
 
   security_rule {
-    name                       = "Allow-Guac-http"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8080"
-    source_address_prefix      = var.guacamole_subnet_cidr
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
     name                       = "Allow-Guac-SSH"
-    priority                   = 110
+    priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
