@@ -150,6 +150,18 @@ resource "azurerm_network_security_group" "vm_nsg" {
   }
 
   security_rule {
+    name                       = "Allow-Guac-RDP"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = var.guacamole_subnet_cidr
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
     name                       = "Deny-VNet-To-VNet"
     priority                   = 200
     direction                  = "Inbound"
