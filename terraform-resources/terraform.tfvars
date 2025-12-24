@@ -24,5 +24,5 @@ course_name = "AZ-104"
 module_name = "Lab01"
 
 #guacamole network details
-shared_vnet_name       = "shared-vnet"
+shared_vnet_name       = "Shared-Hub-VNet"
 guacamole_subnet_name  = "guac-subnet"
