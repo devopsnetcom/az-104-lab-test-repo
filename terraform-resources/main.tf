@@ -47,7 +47,7 @@ data "azurerm_shared_image_gallery" "gallery" {
 
 # Read Shared Image Definition
 data "azurerm_shared_image" "vm_image_def" {
-  name                = var.vm_image_definition_sku
+  name                = var.vm_image_definition_offer
   gallery_name        = data.azurerm_shared_image_gallery.gallery.name
   resource_group_name = var.rg_corecomponent_name
 }
