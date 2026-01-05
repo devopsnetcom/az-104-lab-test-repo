@@ -21,35 +21,50 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg_assoc" 
   network_security_group_id = var.nsg_id
 }
 
-# Windows VM resource
-resource "azurerm_windows_virtual_machine" "winvm" {
+# Deploy VM using Shared Image from Marketplace
+resource "azurerm_windows_virtual_machine" "winvm_marketplace" {
+  count = var.use_gallery_image ? 0 : 1
+
   name                = var.vm_name
+  computer_name       = local.win_hostname
   resource_group_name = var.rg_Name
   location            = var.location
   size                = var.vm_size
-
-  admin_username = var.use_gallery_image ? null : var.vm_username
-  admin_password = var.use_gallery_image ? null : var.vm_password
-  computer_name  = var.use_gallery_image ? null : local.win_hostname
+  admin_username      = var.vm_username
+  admin_password      = var.vm_password
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-  # Marketplace image (generalized)
-  dynamic "source_image_reference" {
-    for_each = var.use_gallery_image ? [] : [1]
-    content {
-      publisher = var.vm_image_publisher
-      offer     = var.vm_image_offer
-      sku       = var.vm_image_sku
-      version   = var.vm_image_version
-    }
+  source_image_reference {
+    publisher = var.vm_image_publisher
+    offer     = var.vm_image_offer
+    sku       = var.vm_image_sku
+    version   = var.vm_image_version
   }
-
-  # Shared Image Gallery image
-  source_image_id = var.use_gallery_image ? var.image_defination_id : null
 
   os_disk {
     storage_account_type = var.vm_os_disk_strg_type
     caching              = var.vm_os_disk_caching
   }
 }
+
+# Deploy VM using Shared Image from Shared Image Gallery
+resource "azurerm_windows_virtual_machine" "winvm_gallery" {
+  count = var.use_gallery_image ? 1 : 0
+
+  name                = var.vm_name
+  resource_group_name = var.rg_Name
+  location            = var.location
+  size                = var.vm_size
+
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+  source_image_id = var.image_defination_id
+
+  os_disk {
+    storage_account_type = var.vm_os_disk_strg_type
+    caching              = var.vm_os_disk_caching
+  }
+}
+
+
