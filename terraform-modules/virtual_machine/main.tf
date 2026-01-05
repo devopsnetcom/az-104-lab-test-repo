@@ -32,12 +32,17 @@ resource "azurerm_windows_virtual_machine" "winvm" {
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-  source_image_reference {
-    publisher = var.vm_image_publisher
-    offer     = var.vm_image_offer
-    sku       = var.vm_image_sku
-    version   = var.vm_image_version
+  dynamic "source_image_reference" {
+    for_each = var.use_gallery_image ? [] : [1]
+    content {
+      publisher = var.vm_image_publisher
+      offer     = var.vm_image_offer
+      sku       = var.vm_image_sku
+      version   = var.vm_image_version
+    }
   }
+
+  source_image_id = var.use_gallery_image ? var.image_defination_id : null
 
   os_disk {
     storage_account_type = var.vm_os_disk_strg_type

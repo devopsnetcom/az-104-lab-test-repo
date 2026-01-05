@@ -74,9 +74,12 @@ module "winvm" {
   vm_password          = var.vm_password
 
   # Image selection logic
-  vm_image_publisher   = local.use_gallery_image ? var.vm_image_definition_publisher : var.vm_image_default_publisher
-  vm_image_offer       = local.use_gallery_image ? var.vm_image_definition_offer : var.vm_image_default_offer
-  vm_image_sku         = local.use_gallery_image ? var.vm_image_definition_sku : var.vm_image_default_sku
+  use_gallery_image    = local.use_gallery_image
+  image_defination_id  = local.use_gallery_image ? data.azurerm_shared_image.vm_image_def.id : ""
+
+  vm_image_publisher   = local.use_gallery_image ? null : var.vm_image_default_publisher
+  vm_image_offer       = local.use_gallery_image ? null : var.vm_image_default_offer
+  vm_image_sku         = local.use_gallery_image ? null : var.vm_image_default_sku
 
   vm_image_version     = var.vm_image_version
   vm_os_disk_strg_type = var.vm_os_disk_strg_type
