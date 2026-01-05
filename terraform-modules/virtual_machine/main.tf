@@ -21,6 +21,7 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg_assoc" 
   network_security_group_id = var.nsg_id
 }
 
+# Windows VM resource
 resource "azurerm_windows_virtual_machine" "winvm" {
   name                = var.vm_name
   resource_group_name = var.rg_Name
