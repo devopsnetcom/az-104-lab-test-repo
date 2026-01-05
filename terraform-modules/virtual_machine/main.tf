@@ -23,15 +23,17 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg_assoc" 
 
 resource "azurerm_windows_virtual_machine" "winvm" {
   name                = var.vm_name
-  computer_name       = local.win_hostname
   resource_group_name = var.rg_Name
   location            = var.location
   size                = var.vm_size
-  admin_username      = var.vm_username
-  admin_password      = var.vm_password
+
+  admin_username = var.use_gallery_image ? null : var.vm_username
+  admin_password = var.use_gallery_image ? null : var.vm_password
+  computer_name  = var.use_gallery_image ? null : local.win_hostname
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
+  # Marketplace image (generalized)
   dynamic "source_image_reference" {
     for_each = var.use_gallery_image ? [] : [1]
     content {
@@ -42,6 +44,7 @@ resource "azurerm_windows_virtual_machine" "winvm" {
     }
   }
 
+  # Shared Image Gallery image
   source_image_id = var.use_gallery_image ? var.image_defination_id : null
 
   os_disk {
