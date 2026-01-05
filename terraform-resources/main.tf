@@ -39,6 +39,27 @@ module "vnet01" {
   guacamole_subnet_cidr   = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
 }
 
+# Read Shared Image Gallery
+data "azurerm_shared_image_gallery" "gallery" {
+  name                = var.compute_gallery_name
+  resource_group_name = var.rg_corecomponent_name
+}
+
+# Read Shared Image Definition
+data "azurerm_shared_image" "vm_image_def" {
+  name                = var.vm_image_definition_sku
+  gallery_name        = data.azurerm_shared_image_gallery.gallery.name
+  resource_group_name = var.rg_corecomponent_name
+}
+
+# Local to decide whether to use Shared Image or Marketplace image
+locals {
+  use_gallery_image = (
+    try(data.azurerm_shared_image.vm_image_def.id, null) != null
+  )
+}
+
+
 ######### Azure Windows Virtual Machine deployment #########
 module "winvm" {
   source               = "../terraform-modules/virtual_machine"
@@ -51,9 +72,12 @@ module "winvm" {
   vm_size              = var.vm_size
   vm_username          = var.vm_username
   vm_password          = var.vm_password
-  vm_image_publisher   = var.vm_image_publisher
-  vm_image_offer       = var.vm_image_offer
-  vm_image_sku         = var.vm_image_sku
+
+  # Image selection logic
+  vm_image_publisher   = local.use_gallery_image ? var.vm_image_definition_publisher : var.vm_image_default_publisher
+  vm_image_offer       = local.use_gallery_image ? var.vm_image_definition_offer : var.vm_image_default_offer
+  vm_image_sku         = local.use_gallery_image ? var.vm_image_definition_sku : var.vm_image_default_sku
+
   vm_image_version     = var.vm_image_version
   vm_os_disk_strg_type = var.vm_os_disk_strg_type
   vm_os_disk_caching   = var.vm_os_disk_caching
