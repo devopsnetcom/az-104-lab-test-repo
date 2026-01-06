@@ -113,3 +113,7 @@ module "eventgrid_topic" {
 output "use_gallery_image" {
   value = local.use_gallery_image
 }
+
+output "image_defination_id" {
+  value = data.azurerm_shared_image.vm_image_def.id
+}
