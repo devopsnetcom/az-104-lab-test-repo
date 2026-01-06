@@ -30,5 +30,5 @@ guacamole_subnet_name       = "guac-subnet"
 #VM Image Gallery Name & defination name
 compute_gallery_name            = "goldenimagepocacg"
 vm_image_definition_publisher   = "MicrosoftWindowsServer"
-vm_image_definition_offer       = "az-104_lab-01-winserdc2025g2" ## {course}-{module}-winserdc2025g2
+vm_image_definition_offer       = "AZ-104-Lab01-winserdc2025g2" ## {course}-{module}-winserdc2025g2
 vm_image_definition_sku         = "2025-datacenter-g2"
