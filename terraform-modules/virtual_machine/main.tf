@@ -54,8 +54,8 @@ resource "azurerm_windows_virtual_machine" "winvm_gallery" {
   }
 }
 
-
-resource "azurerm_windows_virtual_machine" "winvm" {
+# Windows VM using either Marketplace image or Shared Image Gallery image (generalized)
+resource "azurerm_windows_virtual_machine" "winvm_gallery" {
   name                = var.vm_name
   resource_group_name = var.rg_Name
   location            = var.location
