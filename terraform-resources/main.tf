@@ -109,10 +109,7 @@ module "eventgrid_topic" {
   user_identifier         = var.user_identifier
 }
 
-/* Debug Outputs
-output "guacamole_subnet_cidr" {
-  value = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
-} */
-
-
-
+/* Debug Outputs */
+output "use_gallery_image" {
+  value = local.use_gallery_image
+}
