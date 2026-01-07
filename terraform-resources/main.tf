@@ -39,6 +39,21 @@ module "vnet01" {
   guacamole_subnet_cidr   = data.azurerm_subnet.guacamole_subnet.address_prefixes[0]
 }
 
+############## Shared VM Image Gallery Read ########################
+
+# Replace placeholders in image definition offer name
+locals {
+  resolved_vm_image_definition_offer = replace(
+    replace(
+      var.vm_image_definition_offer,
+      "{course}",
+      var.course_name
+    ),
+    "{module}",
+    var.module_name
+  )
+}
+
 # Read Shared Image Gallery
 data "azurerm_shared_image_gallery" "gallery" {
   name                = var.compute_gallery_name
@@ -47,7 +62,7 @@ data "azurerm_shared_image_gallery" "gallery" {
 
 # Read Shared Image Definition
 data "azurerm_shared_image" "vm_image_def" {
-  name                = var.vm_image_definition_offer
+  name                = local.resolved_vm_image_definition_offer
   gallery_name        = data.azurerm_shared_image_gallery.gallery.name
   resource_group_name = var.rg_corecomponent_name
 }
