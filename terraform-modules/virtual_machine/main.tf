@@ -49,6 +49,9 @@ resource "azurerm_windows_virtual_machine" "winvm_gallery" {
   # Shared Image Gallery (preferred)
   source_image_id = var.use_gallery_image ? var.image_defination_id : null
 
+  secure_boot_enabled = true
+  vtpm_enabled = true
+
   os_disk {
     storage_account_type = var.vm_os_disk_strg_type
     caching              = var.vm_os_disk_caching
