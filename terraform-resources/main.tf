@@ -43,13 +43,7 @@ module "vnet01" {
 
 # Replace placeholders in image definition offer name
 locals {
-  resolved_vm_image_definition_offer = replace(
-    replace(
-      var.vm_image_definition_offer,
-      "{course}",
-      var.course_name
-    )
-  )
+  resolved_vm_image_definition_offer = replace(var.vm_image_definition_offer,"{course}", var.course_name)
 }
 
 # Read Shared Image Gallery
