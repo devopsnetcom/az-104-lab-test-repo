@@ -48,9 +48,7 @@ locals {
       var.vm_image_definition_offer,
       "{course}",
       var.course_name
-    ),
-    "{module}",
-    var.module_name
+    )
   )
 }
 

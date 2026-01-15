@@ -28,7 +28,7 @@ shared_vnet_name            = "Shared-Hub-VNet"
 guacamole_subnet_name       = "guac-subnet"
 
 #VM Image Gallery Name & defination name
-compute_gallery_name            = "goldenimagepocacg"
+compute_gallery_name            = "azure_golden_image_acg"
 vm_image_definition_publisher   = "MicrosoftWindowsServer"
-vm_image_definition_offer       = "{course}-{module}-winserdc2025g2" ## AZ-104-Lab01-winserdc2025g2
+vm_image_definition_offer       = "{course}-winserdc2025g2" ## AZ-104-winserdc2025g2
 vm_image_definition_sku         = "2025-datacenter-g2"
