@@ -20,8 +20,6 @@ subnet_NameList                     = ["subnet-1", "subnet-2"]
 ## Event grid Topic details
 eventgrid_topic_name = "egt-lab365-eastus-001"
 rg_corecomponent_name = "RG-CoreComponents"
-course_name = "AZ-104"
-module_name = "Lab01"
 
 #guacamole network details
 shared_vnet_name            = "Shared-Hub-VNet"
