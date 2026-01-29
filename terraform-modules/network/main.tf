@@ -10,8 +10,10 @@ data "azurerm_resources" "all_vnets" {
 ########################################
 locals {
   student_vnet_names = [
-    for v in data.azurerm_resources.all_vnets.resources :
-    v.name
+    for v in data.azurerm_resources.all_vnets.resources : {
+      vnet_name = v.name
+      rg_name   = v.resource_group_name
+    }
     if lower(v.name) != lower(var.mother_vnet_name)
   ]
 }
@@ -22,8 +24,8 @@ locals {
 data "azurerm_virtual_network" "student_vnets" {
   for_each = toset(local.student_vnet_names)
 
-  name                = each.value
-  resource_group_name = var.rg_Name
+  name                = each.value.vnet_name
+  resource_group_name = each.value.rg_name
 }
 
 ###########################################
