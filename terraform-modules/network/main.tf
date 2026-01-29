@@ -9,20 +9,21 @@ data "azurerm_resources" "all_vnets" {
 # Extract only student VNET names (exclude mother)
 ########################################
 locals {
-  student_vnet_names = [
-    for v in data.azurerm_resources.all_vnets.resources : {
+  student_vnets = {
+    for v in data.azurerm_resources.all_vnets.resources :
+    "${v.resource_group_name}/${v.name}" => {
       vnet_name = v.name
       rg_name   = v.resource_group_name
     }
     if lower(v.name) != lower(var.mother_vnet_name)
-  ]
+  }
 }
 
 ###########################################
 # Fetch each student VNET
 ###########################################
 data "azurerm_virtual_network" "student_vnets" {
-  for_each = toset(local.student_vnet_names)
+  for_each = local.student_vnets
 
   name                = each.value.vnet_name
   resource_group_name = each.value.rg_name
