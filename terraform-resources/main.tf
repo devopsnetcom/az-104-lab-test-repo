@@ -30,6 +30,8 @@ module "vnet01" {
   source                  = "../terraform-modules/network"
   vnet_Name               = "${local.prefix}-vnet"
   user_name               = local.prefix
+  course_name             = var.course_name
+  module_name             = var.module_name
   rg_Name                 = data.azurerm_resource_group.rg.name
   rg_corecomponent_name   = var.rg_corecomponent_name
   location                = data.azurerm_resource_group.rg.location

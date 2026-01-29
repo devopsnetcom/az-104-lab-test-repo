@@ -2,7 +2,6 @@
 # Get ALL VNETs from RG
 ###########################################
 data "azurerm_resources" "all_vnets" {
-  resource_group_name = var.rg_Name
   type                = "Microsoft.Network/virtualNetworks"
 }
 
@@ -10,21 +9,24 @@ data "azurerm_resources" "all_vnets" {
 # Extract only student VNET names (exclude mother)
 ########################################
 locals {
-  student_vnet_names = [
+  student_vnets = {
     for v in data.azurerm_resources.all_vnets.resources :
-    v.name
+    "${v.resource_group_name}/${v.name}" => {
+      vnet_name = v.name
+      rg_name   = v.resource_group_name
+    }
     if lower(v.name) != lower(var.mother_vnet_name)
-  ]
+  }
 }
 
 ###########################################
 # Fetch each student VNET
 ###########################################
 data "azurerm_virtual_network" "student_vnets" {
-  for_each = toset(local.student_vnet_names)
+  for_each = local.student_vnets
 
-  name                = each.value
-  resource_group_name = var.rg_Name
+  name                = each.value.vnet_name
+  resource_group_name = each.value.rg_name
 }
 
 ###########################################
@@ -38,20 +40,12 @@ locals {
 }
 
 ###########################################
-# Extract used second octets (10.X.0.0/16)
-###########################################
-locals {
-  used_octets = length(local.student_vnet_cidrs) > 0 ? [
-    for cidr in local.student_vnet_cidrs :
-    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
-  ] : []
-}
-
-###########################################
 # Check if CURRENT student's VNET already exists
 ###########################################
 locals {
-  current_vnet_exists = contains(local.student_vnet_names, var.vnet_Name)
+  current_vnet_key = "${var.rg_Name}/${var.vnet_Name}"
+
+  current_vnet_exists = contains(keys(local.student_vnets),local.current_vnet_key)
 }
 
 ###########################################
@@ -59,16 +53,33 @@ locals {
 ###########################################
 locals {
   current_vnet_existing_cidr = (
-    local.current_vnet_exists ? data.azurerm_virtual_network.student_vnets[var.vnet_Name].address_space[0] : null
+    local.current_vnet_exists ? data.azurerm_virtual_network.student_vnets[local.current_vnet_key].address_space[0] : null
   )
 }
 
+###########################################
+# Extract used second octets (10.X.0.0/16)
+###########################################
+locals {
+  used_octets = length(local.student_vnet_cidrs) > 0 ? [
+    for cidr in local.student_vnet_cidrs :
+    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
+    if can(regex("^10\\.(\\d+)\\.", cidr))
+  ] : []
+}
 
 ###########################################
 # Calculate next available octet (only for NEW vnets)
 ###########################################
 locals {
-  next_octet = (length(local.used_octets) == 0 ? 1 : max(local.used_octets...) + 1)
+  possible_octets = range(1, 255)
+
+  free_octets = [
+    for o in local.possible_octets :
+    o if !contains(local.used_octets, o)
+  ]
+
+  next_octet = local.free_octets[0]
 }
 
 ###########################################
@@ -108,7 +119,7 @@ resource "azurerm_subnet" "student_subnet" {
 /* Both way Vnet Peering between Mother VNet and Student VNet */
 
 resource "azurerm_virtual_network_peering" "mother_to_student" {
-  name                      = "peer-mother-to-${var.user_name}"
+  name                      = "peer-mother-to-${var.user_name}-${var.course_name}-${var.module_name}"
   resource_group_name       = var.rg_corecomponent_name
   virtual_network_name      = var.mother_vnet_name
   remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
@@ -116,7 +127,7 @@ resource "azurerm_virtual_network_peering" "mother_to_student" {
 }
 
 resource "azurerm_virtual_network_peering" "student_to_mother" {
-  name                      = "peer-${var.user_name}-to-mother"
+  name                      = "peer-${var.user_name}-${var.course_name}-${var.module_name}-to-mother"
   resource_group_name       = var.rg_Name
   virtual_network_name      = azurerm_virtual_network.student_vnet.name
   remote_virtual_network_id = var.mother_vnet_id
