@@ -11,7 +11,7 @@ data "azurerm_resources" "all_vnets" {
 locals {
   student_vnets = {
     for v in data.azurerm_resources.all_vnets.resources :
-    v.name => {
+    "${v.resource_group_name}/${v.name}" => {
       vnet_name = v.name
       rg_name   = v.resource_group_name
     }
@@ -40,20 +40,12 @@ locals {
 }
 
 ###########################################
-# Extract used second octets (10.X.0.0/16)
-###########################################
-locals {
-  used_octets = length(local.student_vnet_cidrs) > 0 ? [
-    for cidr in local.student_vnet_cidrs :
-    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
-  ] : []
-}
-
-###########################################
 # Check if CURRENT student's VNET already exists
 ###########################################
 locals {
-  current_vnet_exists = contains(keys(local.student_vnets), var.vnet_Name)
+  current_vnet_key = "${var.rg_Name}/${var.vnet_Name}"
+
+  current_vnet_exists = contains(keys(local.student_vnets),local.current_vnet_key)
 }
 
 ###########################################
@@ -61,16 +53,33 @@ locals {
 ###########################################
 locals {
   current_vnet_existing_cidr = (
-    local.current_vnet_exists ? data.azurerm_virtual_network.student_vnets[var.vnet_Name].address_space[0] : null
+    local.current_vnet_exists ? data.azurerm_virtual_network.student_vnets[local.current_vnet_key].address_space[0] : null
   )
 }
 
+###########################################
+# Extract used second octets (10.X.0.0/16)
+###########################################
+locals {
+  used_octets = length(local.student_vnet_cidrs) > 0 ? [
+    for cidr in local.student_vnet_cidrs :
+    tonumber(regex("^10\\.(\\d+)\\.", cidr)[0])
+    if can(regex("^10\\.(\\d+)\\.", cidr))
+  ] : []
+}
 
 ###########################################
 # Calculate next available octet (only for NEW vnets)
 ###########################################
 locals {
-  next_octet = (length(local.used_octets) == 0 ? 1 : max(local.used_octets...) + 1)
+  possible_octets = range(1, 255)
+
+  free_octets = [
+    for o in local.possible_octets :
+    o if !contains(local.used_octets, o)
+  ]
+
+  next_octet = local.free_octets[0]
 }
 
 ###########################################
