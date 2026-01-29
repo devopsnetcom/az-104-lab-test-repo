@@ -11,7 +11,7 @@ data "azurerm_resources" "all_vnets" {
 locals {
   student_vnets = {
     for v in data.azurerm_resources.all_vnets.resources :
-    "${v.resource_group_name}/${v.name}" => {
+    v.name => {
       vnet_name = v.name
       rg_name   = v.resource_group_name
     }
@@ -53,7 +53,7 @@ locals {
 # Check if CURRENT student's VNET already exists
 ###########################################
 locals {
-  current_vnet_exists = contains(local.student_vnet_names, var.vnet_Name)
+  current_vnet_exists = contains(keys(local.student_vnets), var.vnet_Name)
 }
 
 ###########################################
