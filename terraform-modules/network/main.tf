@@ -2,7 +2,6 @@
 # Get ALL VNETs from RG
 ###########################################
 data "azurerm_resources" "all_vnets" {
-  resource_group_name = var.rg_Name
   type                = "Microsoft.Network/virtualNetworks"
 }
 
