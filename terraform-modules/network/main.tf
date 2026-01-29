@@ -119,7 +119,7 @@ resource "azurerm_subnet" "student_subnet" {
 /* Both way Vnet Peering between Mother VNet and Student VNet */
 
 resource "azurerm_virtual_network_peering" "mother_to_student" {
-  name                      = "peer-mother-to-${var.user_name}"
+  name                      = "peer-mother-to-${var.user_name}-${var.course_name}-${var.module_name}"
   resource_group_name       = var.rg_corecomponent_name
   virtual_network_name      = var.mother_vnet_name
   remote_virtual_network_id = azurerm_virtual_network.student_vnet.id
@@ -127,7 +127,7 @@ resource "azurerm_virtual_network_peering" "mother_to_student" {
 }
 
 resource "azurerm_virtual_network_peering" "student_to_mother" {
-  name                      = "peer-${var.user_name}-to-mother"
+  name                      = "peer-${var.user_name}-${var.course_name}-${var.module_name}-to-mother"
   resource_group_name       = var.rg_Name
   virtual_network_name      = azurerm_virtual_network.student_vnet.name
   remote_virtual_network_id = var.mother_vnet_id
