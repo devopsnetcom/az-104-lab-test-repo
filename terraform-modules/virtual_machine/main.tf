@@ -53,7 +53,6 @@ resource "azurerm_windows_virtual_machine" "winvm_gallery" {
   vtpm_enabled = true
   allow_extension_operations = false
   provision_vm_agent = true
-  patch_mode = "AutomaticByPlatform"
 
   os_disk {
     storage_account_type = var.vm_os_disk_strg_type
