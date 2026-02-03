@@ -51,7 +51,7 @@ env:
 
 jobs:
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: SkillLab365Runner
     name: Terraform Workflow
 
     steps:
